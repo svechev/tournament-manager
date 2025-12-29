@@ -23,7 +23,6 @@ CREATE TABLE Tournament (
     status ENUM('upcoming', 'ongoing', 'finished') NOT NULL DEFAULT 'upcoming',
     capacity INT UNSIGNED NOT NULL,
     spots_taken INT UNSIGNED NOT NULL DEFAULT 0, 
-    --spots_taken might not be needed but I added it for now, needs to be updated every time
     is_team_based BOOLEAN NOT NULL,
     creator_user_id INT UNSIGNED NOT NULL,
 
@@ -38,7 +37,7 @@ CREATE TABLE Participates (
     user_id INT UNSIGNED NOT NULL,
     tournament_id INT UNSIGNED NOT NULL,
     team_name VARCHAR(63) NOT NULL,
-    result_position INT UNSIGNED, --type for this is not set in stone
+    result_position INT UNSIGNED,
     joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY(user_id, tournament_id),
