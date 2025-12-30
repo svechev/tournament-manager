@@ -1,3 +1,15 @@
+<?php
+    session_start();
+
+
+    $error = $_SESSION['error'] ?? null;
+    $prev = $_SESSION['prev'] ?? [];
+
+    unset($_SESSION['error']);
+    unset($_SESSION['prev']);
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,25 +24,29 @@
         <h1 class="logo">TournamentHub</h1>
         <h2>Create account</h2>
 
-        <form>
+        <form action="handlers/register_handler.php" method="post">
+            <?php if ($error): ?>
+                <div class="input-group error"><?= htmlspecialchars($error) ?></div>
+            <?php endif; ?>
+        
             <div class="input-group">
                 <label>Username</label>
-                <input type="text" required>
+                <input type="text" name="username" value="<?= htmlspecialchars($prev['username'] ?? '') ?>" required>
             </div>
 
             <div class="input-group">
                 <label>Email</label>
-                <input type="email" required>
+                <input type="email" name="email" value="<?= htmlspecialchars($prev['email'] ?? '') ?>" required>
             </div>
 
             <div class="input-group">
                 <label>Password</label>
-                <input type="password" required>
+                <input type="password" name="password" required>
             </div>
 
             <div class="input-group">
                 <label>Confirm Password</label>
-                <input type="password" required>
+                <input type="password" name="confirm-password" required>
             </div>
 
             <button type="submit" class="btn primary">Register</button>
@@ -38,7 +54,7 @@
 
         <p class="switch">
             Already have an account?
-            <a href="login.html">Login</a>
+            <a href="login.php">Login</a>
         </p>
     </div>
 </div>
