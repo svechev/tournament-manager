@@ -54,3 +54,18 @@ CREATE TABLE Participates (
         ON DELETE CASCADE
         ON UPDATE CASCADE     
 );
+
+INSERT INTO User (id, username, email, password_hash, created_at)
+VALUES
+    (NULL, "gosho", "gosho@gmail.com", "$argon2id$v=19$m=65536,t=4,p=1$RW1aaVg3YUkxcUpGdXYybw$WVep5a1eVVvLdHkyGGJXm+2qDsHI8p0xQJ2JBqvF1GY", NULL),
+    (NULL, "pesho", "pesho@gmail.com", "$argon2id$v=19$m=65536,t=4,p=1$RW1aaVg3YUkxcUpGdXYybw$WVep5a1eVVvLdHkyGGJXm+2qDsHI8p0xQJ2JBqvF1GY", NULL),
+    (NULL, "tosho", "tosho@gmail.com", "$argon2id$v=19$m=65536,t=4,p=1$RW1aaVg3YUkxcUpGdXYybw$WVep5a1eVVvLdHkyGGJXm+2qDsHI8p0xQJ2JBqvF1GY", NULL),
+    (NULL, "kris", "kris@gmail.com", "$argon2id$v=19$m=65536,t=4,p=1$RW1aaVg3YUkxcUpGdXYybw$WVep5a1eVVvLdHkyGGJXm+2qDsHI8p0xQJ2JBqvF1GY", NULL),
+    (NULL, "rado", "rado@gmail.com", "$argon2id$v=19$m=65536,t=4,p=1$RW1aaVg3YUkxcUpGdXYybw$WVep5a1eVVvLdHkyGGJXm+2qDsHI8p0xQJ2JBqvF1GY", NULL),
+    (NULL, "ivan", "ivan@gmail.com", "$argon2id$v=19$m=65536,t=4,p=1$RW1aaVg3YUkxcUpGdXYybw$WVep5a1eVVvLdHkyGGJXm+2qDsHI8p0xQJ2JBqvF1GY", NULL),
+    (NULL, "stoyan", "stoyan@gmail.com", "$argon2id$v=19$m=65536,t=4,p=1$RW1aaVg3YUkxcUpGdXYybw$WVep5a1eVVvLdHkyGGJXm+2qDsHI8p0xQJ2JBqvF1GY", NULL),
+    (NULL, "milan", "milan@gmail.com", "$argon2id$v=19$m=65536,t=4,p=1$RW1aaVg3YUkxcUpGdXYybw$WVep5a1eVVvLdHkyGGJXm+2qDsHI8p0xQJ2JBqvF1GY", NULL),
+    (NULL, "maria", "maria@gmail.com", "$argon2id$v=19$m=65536,t=4,p=1$RW1aaVg3YUkxcUpGdXYybw$WVep5a1eVVvLdHkyGGJXm+2qDsHI8p0xQJ2JBqvF1GY", NULL),
+    (NULL, "ani", "ani@gmail.com", "$argon2id$v=19$m=65536,t=4,p=1$RW1aaVg3YUkxcUpGdXYybw$WVep5a1eVVvLdHkyGGJXm+2qDsHI8p0xQJ2JBqvF1GY", NULL),
+    (NULL, "jivko", "jivko@gmail.com", "$argon2id$v=19$m=65536,t=4,p=1$RW1aaVg3YUkxcUpGdXYybw$WVep5a1eVVvLdHkyGGJXm+2qDsHI8p0xQJ2JBqvF1GY", NULL)
+    

@@ -1,11 +1,7 @@
 <?php
-session_start();
-require "db.php";
+include('handlers/require_login.php');
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.html");
-    exit;
-}
+require "db.php";
 
 $stmt = $pdo->query("
     SELECT 

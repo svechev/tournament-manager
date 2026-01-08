@@ -1,11 +1,6 @@
 <?php
-session_start();
+include("handlers/require_login.php");
 require "db.php";
-
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.html");
-    exit;
-}
 
 $userId = $_SESSION['user_id'];
 
