@@ -2,35 +2,67 @@
 include("handlers/require_login.php");
 require "db.php";
 
-$userId = $_SESSION['user_id'];
+$userId = $_SESSION['user_id'] ?? null;
+if (!$userId) {
+    header("Location: login.php");
+    exit;
+}
 
-$stmt = $pdo->prepare("
-    SELECT username, email, description, created_at
-    FROM User
-    WHERE id = ?
-");
-$stmt->execute([$userId]);
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
+/* User info */
+$stmt = mysqli_prepare(
+    $conn,
+    "SELECT username, email, description, created_at
+     FROM User
+     WHERE id = ?"
+);
+mysqli_stmt_bind_param($stmt, "i", $userId);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+$user = mysqli_fetch_assoc($result);
+mysqli_stmt_close($stmt);
 
-$stmt = $pdo->prepare("
-    SELECT t.id, t.name, t.start_datetime
-    FROM Tournament t
-    JOIN Participates p ON p.tournament_id = t.id
-    WHERE p.user_id = ?
-      AND t.status != 'finished'
-");
-$stmt->execute([$userId]);
-$activeTournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+if (!$user) {
+    header("Location: logout.php");
+    exit;
+}
 
-$stmt = $pdo->prepare("
-    SELECT t.name, p.result_position
-    FROM Tournament t
-    JOIN Participates p ON p.tournament_id = t.id
-    WHERE p.user_id = ?
-      AND t.status = 'finished'
-");
-$stmt->execute([$userId]);
-$finishedTournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+/* Active tournaments */
+$stmt = mysqli_prepare(
+    $conn,
+    "SELECT t.id, t.name, t.start_datetime
+     FROM Tournament t
+     JOIN Participates p ON p.tournament_id = t.id
+     WHERE p.user_id = ?
+       AND t.status != 'finished'"
+);
+mysqli_stmt_bind_param($stmt, "i", $userId);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+
+$activeTournaments = [];
+while ($row = mysqli_fetch_assoc($result)) {
+    $activeTournaments[] = $row;
+}
+mysqli_stmt_close($stmt);
+
+/* Finished tournaments */
+$stmt = mysqli_prepare(
+    $conn,
+    "SELECT t.name, p.result_position
+     FROM Tournament t
+     JOIN Participates p ON p.tournament_id = t.id
+     WHERE p.user_id = ?
+       AND t.status = 'finished'"
+);
+mysqli_stmt_bind_param($stmt, "i", $userId);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+
+$finishedTournaments = [];
+while ($row = mysqli_fetch_assoc($result)) {
+    $finishedTournaments[] = $row;
+}
+mysqli_stmt_close($stmt);
 ?>
 <!DOCTYPE html>
 <html lang="bg">
@@ -52,7 +84,7 @@ $finishedTournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <main class="container">
     <h1><?= htmlspecialchars($user['username']) ?></h1>
     <p><?= htmlspecialchars($user['email']) ?></p>
-    <p><?= htmlspecialchars($user['description']) ?></p>
+    <p><?= htmlspecialchars($user['description'] ?? '') ?></p>
     <p class="meta">Joined on <?= date("d.m.Y", strtotime($user['created_at'])) ?></p>
 
     <h2>Active tournaments</h2>
@@ -62,7 +94,7 @@ $finishedTournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <ul>
             <?php foreach ($activeTournaments as $t): ?>
                 <li>
-                    <a href="tournament.php?id=<?= $t['id'] ?>">
+                    <a href="tournament.php?id=<?= (int)$t['id'] ?>">
                         <?= htmlspecialchars($t['name']) ?>
                     </a>
                     – <?= date("d.m.Y", strtotime($t['start_datetime'])) ?>
@@ -79,7 +111,7 @@ $finishedTournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php foreach ($finishedTournaments as $t): ?>
                 <li>
                     <?= htmlspecialchars($t['name']) ?>
-                    – position <?= $t['result_position'] ?>
+                    – position <?= htmlspecialchars((string)$t['result_position']) ?>
                 </li>
             <?php endforeach; ?>
         </ul>
