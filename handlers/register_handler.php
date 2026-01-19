@@ -50,24 +50,9 @@ if ($password != $confirm_password) {
     exit;
 }
 
-$db_server = "localhost";
-$db_user = "root";
-$db_pass = "";
-$db_name = "tournament_db";
-$conn = "";
-
-try {
-    $conn = mysqli_connect($db_server, $db_user, $db_pass, $db_name);
-}
-catch (mysqli_sql_exception) {
-    $_SESSION['error'] = 'Неуспешна връзка с базата данни!';
-    header('Location: ../register.php');
-    exit;
-}
+require '../db.php';
 
 $pass_hash = password_hash($password, PASSWORD_ARGON2ID);
-$insert_sql = "INSERT INTO User (username, email, password_hash)
-                   VALUES ('$username', '$email', '$pass_hash')";
 
 $stmt = mysqli_prepare(
     $conn,
