@@ -48,7 +48,7 @@ mysqli_stmt_close($stmt);
 /* Finished tournaments */
 $stmt = mysqli_prepare(
     $conn,
-    "SELECT t.name, p.result_position
+    "SELECT t.name, t.category, p.result_position
      FROM Tournament t
      JOIN Participates p ON p.tournament_id = t.id
      WHERE p.user_id = ?
@@ -78,6 +78,7 @@ mysqli_stmt_close($stmt);
     <nav>
         <a href="home.php">Tournaments</a>
         <a href="user.php">Profile</a>
+        <a href="logout.php">Logout</a>
     </nav>
 </header>
 
@@ -113,6 +114,85 @@ mysqli_stmt_close($stmt);
                     <?= htmlspecialchars($t['name']) ?>
                     – position <?= htmlspecialchars((string)$t['result_position']) ?>
                 </li>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
+
+    <?php
+    $stats = [
+        'participated' => count($finishedTournaments),
+        'wins' => 0,
+        'runner_ups' => 0,
+        'position_7' => 0.
+    ];
+
+    foreach ($finishedTournaments as $t) {
+        if ($t['result_position'] == 1) {
+            $stats['wins']++;
+        } elseif ($t['result_position'] == 2) {
+            $stats['runner_ups']++;
+        } elseif ($t['result_position'] == 7) {
+            $stats['position_7']++;
+        }
+    }
+
+   $badges = [];
+
+    switch (true) {
+        case $stats['wins'] >= 5:
+            $badges[] = 'Легенда (5 победи)';
+        case $stats['wins'] >= 3:
+            $badges[] = 'Шампион (3 победи)';
+        case $stats['wins'] >= 1:
+            $badges[] = 'Победител (1 победа)';
+            break;
+    }
+
+    switch (true) {
+        case $stats['runner_ups'] >= 5:
+            $badges[] = 'Вицешампион х5 (5 втори места, ауч)';
+        case $stats['runner_ups'] >= 3:
+            $badges[] = 'Вицешампион х3 (3 втори места)';
+        case $stats['runner_ups'] >= 1:
+            $badges[] = 'Вицешампион (1 второ място)';
+            break;
+    }
+
+    if ($stats['position_7'] == 3) {
+        $badges[] = '777 (3 седми места)';
+    }
+
+    $categoryCount = [];
+    foreach ($finishedTournaments as $t) {
+        $cat = $t['category'] ?? 'Няма категория';
+        if (!isset($categoryCount[$cat])) {
+            $categoryCount[$cat] = 0;
+        }
+        $categoryCount[$cat]++;
+    }
+
+    $favoriteCategory = null;
+    if (!empty($categoryCount)) {
+        arsort($categoryCount);
+        $favoriteCategory = array_key_first($categoryCount);
+    }
+    ?>
+
+    <h2>Статистики</h2>
+    <ul>
+        <li>Брой завършили турнири, в които съм участвал: <?= $stats['participated'] ?></li>
+        <li>Спечелени турнири: <?= $stats['wins'] ?></li>
+        <li>Втори места: <?= $stats['runner_ups'] ?></li>
+        <li>Любима категория турнир: <?= htmlspecialchars($favoriteCategory ?? 'Няма') ?></li>
+    </ul>
+
+    <h2>Отличия</h2>
+    <?php if (empty($badges)): ?>
+        <p>Все още няма отличия.</p>
+    <?php else: ?>
+        <ul class="badges">
+            <?php foreach ($badges as $badge): ?>
+                <li><?= htmlspecialchars($badge) ?></li>
             <?php endforeach; ?>
         </ul>
     <?php endif; ?>

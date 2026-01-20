@@ -26,6 +26,8 @@ while ($row = mysqli_fetch_assoc($result)) {
 }
 
 mysqli_stmt_close($stmt);
+
+$categories = ['Шах', 'Спорт', 'Електронни спортове', 'Настолни игри'];
 ?>
 <!DOCTYPE html>
 <html lang="bg">
@@ -48,9 +50,27 @@ mysqli_stmt_close($stmt);
 <main class="container">
     <h1>Upcoming & Ongoing Tournaments</h1>
 
-    <div class="tournament-grid">
+        <div class="filters" style="margin-bottom:16px;">
+        <label for="category-filter">Category:</label>
+        <select id="category-filter">
+            <option value="">Всички</option>
+            <?php foreach ($categories as $cat): ?>
+                <option value="<?= htmlspecialchars($cat) ?>"><?= htmlspecialchars($cat) ?></option>
+            <?php endforeach; ?>
+        </select>
+
+        <label for="sort-date" style="margin-left:16px;">Sort by date:</label>
+        <select id="sort-date">
+            <option value="asc">↑ Ascending</option>
+            <option value="desc">↓ Descending</option>
+        </select>
+    </div>
+
+    <div id="tournament-grid" class="tournament-grid">
         <?php foreach ($tournaments as $t): ?>
-            <div class="tournament-card">
+            <div class="tournament-card"
+             data-date="<?= strtotime($t['start_datetime']) ?>"
+             data-category="<?= htmlspecialchars($t['category']) ?>">
                 <div class="card-header">
                     <h2><?= htmlspecialchars($t['name']) ?></h2>
                     <span class="tag"><?= htmlspecialchars($t['category']) ?></span>
@@ -82,6 +102,35 @@ mysqli_stmt_close($stmt);
             </div>
         <?php endforeach; ?>
     </div>
+
+    <script>
+    const grid = document.getElementById('tournament-grid');
+    const cards = Array.from(grid.querySelectorAll('.tournament-card'));
+    const categoryFilter = document.getElementById('category-filter');
+    const sortDate = document.getElementById('sort-date');
+
+   function updateTournaments() {
+    const cat = categoryFilter.value;
+    const order = sortDate.value;
+
+    cards.forEach(card => {
+        const cardCat = card.dataset.category;
+        card.style.display = (!cat || cardCat === cat) ? 'block' : 'none';
+    });
+
+    const visibleCards = cards.filter(c => c.style.display !== 'none');
+    visibleCards.sort((a, b) => {
+        const aTime = parseInt(a.dataset.date);
+        const bTime = parseInt(b.dataset.date);
+        return order === 'asc' ? aTime - bTime : bTime - aTime;
+    });
+
+    visibleCards.forEach(c => grid.appendChild(c));
+    }
+    categoryFilter.addEventListener('change', updateTournaments);
+    sortDate.addEventListener('change', updateTournaments);
+    updateTournaments(); 
+    </script>
 </main>
 
 </body>

@@ -93,12 +93,12 @@ VALUES
   ('Футбол', 'някакво описание', 'Спорт', '2026-02-10 10:00:00', '2026-02-12 18:00:00', 'upcoming',16, 0, 1, 2),
   ('CS 2 турнир', 'някакво описание', 'Електронни спортове','2026-03-01 12:00:00', '2026-03-02 18:00:00', 'ongoing',  8, 3, 0, 3);
 
-INSERT INTO Participates (user_id, tournament_id, team_name, joined_at)
+INSERT INTO Participates (user_id, tournament_id, team_name,result_position, joined_at)
 VALUES
-  (1, 1, 'gosho',  NOW()),
-  (2, 1, 'pesho',  NOW()),
-  (3, 1, 'tosho',  NOW()),
-  (4, 1, 'kris',   NOW());
+  (1, 1, 'gosho', 1, NOW()),
+  (2, 1, 'pesho', 4, NOW()),
+  (3, 1, 'tosho', 3, NOW()),
+  (4, 1, 'kris', 2,  NOW());
 
 INSERT INTO Matches (match_id, tournament_id, match_date, current_round, side1_nickname, side2_nickname, winner, next_match_id, score)
 VALUES
