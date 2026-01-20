@@ -50,70 +50,34 @@ if ($new_team == 'create') {
     }
 }
 
+require 'join_function.php';
 
 mysqli_begin_transaction($conn);
 
 try {
-
-    // join
-    $stmt = mysqli_prepare(
+    joinTournament(
         $conn,
-        "INSERT INTO Participates (user_id, tournament_id, team_name)
-         VALUES (?, ?, ?)"
-    );
-
-    mysqli_stmt_bind_param($stmt, "iis",
         $user_id,
         $tournament_id,
-        $team_name
+        $team_name,
     );
 
-    try {
-        mysqli_stmt_execute($stmt);
-    } catch (mysqli_sql_exception $e) {
-        mysqli_rollback($conn);
-
-        if ($e->getCode() === 1062) {
-            $_SESSION['error'] = 'Вече сте в турнира!';
-        } else {
-            $_SESSION['error'] = 'Грешка при присъединяването!';
-        }
-
-        header('Location: ../tournament.php?id=' . $tournament_id);
-        exit;
-    }
-
-    // update tournament
-    if ($new_team != 'join') {
-        $stmt = mysqli_prepare(
-            $conn,
-            "UPDATE Tournament
-            SET spots_taken = spots_taken + 1
-            WHERE id = ? AND spots_taken < capacity"
-        );
-
-        mysqli_stmt_bind_param($stmt, "i", $tournament_id);
-        mysqli_stmt_execute($stmt);
-
-        if (mysqli_stmt_affected_rows($stmt) !== 1) {
-            mysqli_rollback($conn);
-            $_SESSION['error'] = 'Турнирът вече е запълнен!';
-            header('Location: ../tournament.php?id=' . $tournament_id);
-            exit;
-        }
-    }
-
-    mysqli_stmt_close($stmt);
     mysqli_commit($conn);
-
-    // success
     $_SESSION['success'] = 'Успешно присъединяване!';
-    header('Location: ../tournament.php?id=' . $tournament_id);
-    exit;
-
-} catch (Throwable $e) {
+} 
+catch (Throwable $e) {
     mysqli_rollback($conn);
-    $_SESSION['error'] = 'Неочаквана грешка!';
-    header('Location: ../tournament.php?id=' . $tournament_id);
-    exit;
+    switch ($e->getMessage()) {
+        case 'ALREADY_JOINED':
+            $_SESSION['error'] = 'Вече сте в турнира!';
+            break;
+        case 'TOURNAMENT_FULL':
+            $_SESSION['error'] = 'Турнирът вече е запълнен!';
+            break;
+        default:
+            $_SESSION['error'] = 'Грешка при присъединяването!';
+    }
 }
+
+header("Location: ../tournament.php?id=$tournament_id");
+exit;

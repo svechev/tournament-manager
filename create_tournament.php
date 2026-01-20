@@ -11,6 +11,8 @@ $success = $_SESSION['success'] ?? null;
 unset($_SESSION['error']);
 unset($_SESSION['success']);
 unset($_SESSION['prev']);
+
+$categories = ['Шах', 'Спорт', 'Електронни спортове', 'Настолни игри'];
 ?>
 <!DOCTYPE html>
 <html lang="bg">
@@ -23,9 +25,10 @@ unset($_SESSION['prev']);
 
 <div class="auth-container">
     <div class="auth-card">
-        <h2>Create a new tournament</h2>
+        <h2>Създай нов турнир</h2>
 
-        <form action="handlers/create_tournament_handler.php" method="post">
+        <form action="handlers/create_tournament_handler.php" method="post"
+            enctype="multipart/form-data">
             <?php if ($error): ?>
                 <div class="input-group error"><?= htmlspecialchars($error) ?></div>
             <?php endif; ?>
@@ -37,13 +40,21 @@ unset($_SESSION['prev']);
 
             <div class="input-group">
                 <label>Описание</label>
-                <textarea name="description" rows="4" value="<?= htmlspecialchars($prev['description'] ?? '') ?>" required>
+                <textarea name="description" rows="4" required>
+                    <?= htmlspecialchars($prev['description'] ?? '') ?>
                 </textarea>
             </div>
 
             <div class="input-group">
                 <label>Категория</label>
-                <input type="text" name="category" value="<?= htmlspecialchars($prev['description'] ?? '') ?>" required>
+                <select name="category" required>
+                    <?php foreach ($categories as $category): ?>
+                        <option value="<?= htmlspecialchars($category) ?>"
+                            <?= ($category === ($prev['category'] ?? '')) ? 'selected' : '' ?>>>
+                                <?= htmlspecialchars($category) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
             </div>
 
             <div class="input-group">
@@ -58,17 +69,22 @@ unset($_SESSION['prev']);
 
             <div class="input-group">
                 <label>Капацитет</label>
-                <input type="number" name="capacity" min="2" value="<?= htmlspecialchars($prev['number'] ?? '') ?>" required>
+                <input type="number" name="capacity" min="2" value="<?= htmlspecialchars($prev['capacity'] ?? '') ?>" required>
             </div>
 
             <div class="input-group">
-                <input type="radio" name="is-team-based" value="team">
+                <input type="radio" name="is-team-based" value="team"
+                    <?= (($prev['is_team_based'] ?? '') === 'team') ? 'checked' : '' ?>>
                 <label for="html">Отборен</label><br>
 
-                <input type="radio" name="is-team-based" value="individual">
+                <input type="radio" name="is-team-based" value="individual"
+                <?= (($prev['is_team_based'] ?? '') === 'individual') ? 'checked' : '' ?>>
                 <label for="css">Индивидуален</label><br>
-            </div>
 
+                <input type="file" name="participants_csv" accept=".csv">
+                <label>Участници (CSV файл, по избор)</label><br>
+
+            </div>
 
             <button type="submit" class="btn primary">Създай</button>
 

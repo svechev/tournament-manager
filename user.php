@@ -48,7 +48,7 @@ mysqli_stmt_close($stmt);
 /* Finished tournaments */
 $stmt = mysqli_prepare(
     $conn,
-    "SELECT t.name, t.category, p.result_position
+    "SELECT t.id, t.name, t.category, p.result_position
      FROM Tournament t
      JOIN Participates p ON p.tournament_id = t.id
      WHERE p.user_id = ?
@@ -111,7 +111,9 @@ mysqli_stmt_close($stmt);
         <ul>
             <?php foreach ($finishedTournaments as $t): ?>
                 <li>
-                    <?= htmlspecialchars($t['name']) ?>
+                    <a href="tournament.php?id=<?= (int)$t['id'] ?>">
+                        <?= htmlspecialchars($t['name']) ?>
+                    </a>
                     – position <?= htmlspecialchars((string)$t['result_position']) ?>
                 </li>
             <?php endforeach; ?>

@@ -47,7 +47,7 @@ else {
         session_destroy();
 
         session_set_cookie_params([
-            'lifetime' => 60 * 30
+            'lifetime' => 60 * 60 * 2
         ]);
 
         session_start();

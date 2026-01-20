@@ -17,7 +17,7 @@ CREATE TABLE Tournament (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(63) NOT NULL,
     description VARCHAR(255),
-    category VARCHAR(31),
+    category VARCHAR(63),
     start_datetime DATETIME NOT NULL,
     end_datetime DATETIME NOT NULL,
     status ENUM('upcoming', 'ongoing', 'finished') NOT NULL DEFAULT 'upcoming',
