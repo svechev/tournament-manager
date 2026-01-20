@@ -43,9 +43,7 @@ if ($new_team == 'create') {
 
     while ($row = mysqli_fetch_assoc($result)) {
         if ($row['team_name'] == $team_name) {
-            // $_SESSION['error'] = 'Този отбор вече съществува!';
-            $r = $row['team_name'];
-            $_SESSION['error'] = "$team_name , $r";
+            $_SESSION['error'] = 'Този отбор вече съществува!';
             header('Location: ../tournament.php?id=' . $tournament_id);
             exit;
         }
