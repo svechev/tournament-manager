@@ -135,10 +135,12 @@ unset($_SESSION['success']);
                                 
                                 <form method="post" action="handlers/join_tournament_handler.php">
                                     <?php if ((bool)$t['is_team_based'] == false): ?>
-                                
-                                        <input type="text" name="team_name"
-                                            value="<?= htmlspecialchars($prev['team_name'] ?? '') ?>"
-                                            required>
+                                        <label>
+                                            Прякор
+                                            <input type="text" name="team_name"
+                                                value="<?= htmlspecialchars($prev['team_name'] ?? '') ?>"
+                                                required>
+                                        </label>
 
                                     <?php else: ?>
                                         <div class="team-choice">
