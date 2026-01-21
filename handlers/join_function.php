@@ -8,6 +8,7 @@ function joinTournament(
 ): void {
     try {
         // checks for inserting a new/old team in a team tournament
+        // or an individual with an existing nickname
         $stmt = mysqli_prepare(
             $conn,
             "SELECT t.is_team_based FROM Tournament t WHERE t.id = ?"
@@ -18,25 +19,26 @@ function joinTournament(
         $row = mysqli_fetch_assoc($result);
 
         $is_team_based = (bool)$row['is_team_based'];
+ 
+        $name_exists = false;
 
-        // 2. Determine $old_team
-        $old_team = false;
+        // the check if nickname/team name exists
+        $stmt = mysqli_prepare(
+            $conn,
+            "SELECT 1
+            FROM Participates p
+            WHERE p.tournament_id = ? AND p.team_name = ?
+            LIMIT 1"
+        );
+        mysqli_stmt_bind_param($stmt, "is", $tournament_id, $team_name);
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
 
-        if ($is_team_based) {
-            $stmt = mysqli_prepare(
-                $conn,
-                "SELECT 1
-                FROM Participates p
-                WHERE p.tournament_id = ? AND p.team_name = ?
-                LIMIT 1"
-            );
-            mysqli_stmt_bind_param($stmt, "is", $tournament_id, $team_name);
-            mysqli_stmt_execute($stmt);
-            $res = mysqli_stmt_get_result($stmt);
-
-            $old_team = mysqli_num_rows($res) > 0;
-        }
-
+        // don't add the same nickname twice in individual tournament
+        $name_exists = mysqli_num_rows($res) > 0;
+        if ($name_exists && !$is_team_based) {
+            throw new RuntimeException('NAME_EXISTS');
+        } 
 
         // insert
         $stmt = mysqli_prepare(
@@ -57,7 +59,7 @@ function joinTournament(
         }
 
         // update tournament
-        if (!$old_team) {
+        if (!$name_exists) {
             $stmt = mysqli_prepare(
                 $conn,
                 "UPDATE Tournament

@@ -68,6 +68,9 @@ try {
 catch (Throwable $e) {
     mysqli_rollback($conn);
     switch ($e->getMessage()) {
+        case 'NAME_EXISTS':
+            $_SESSION['error'] = 'Вече има потребител с това име в турнира!';
+            break;
         case 'ALREADY_JOINED':
             $_SESSION['error'] = 'Вече сте в турнира!';
             break;

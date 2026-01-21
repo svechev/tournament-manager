@@ -33,6 +33,7 @@ mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 $t = mysqli_fetch_assoc($result);
 
+// get a list of the teams
 if ((bool)$t['is_team_based'] == true) {
     $stmt = mysqli_prepare(
         $conn,
@@ -50,8 +51,28 @@ if ((bool)$t['is_team_based'] == true) {
         $teams[] = $row['team_name'];
     }
 }
-mysqli_stmt_close($stmt);
 
+// check if user is in tournament already
+$stmt = mysqli_prepare(
+    $conn,
+    "SELECT EXISTS (
+        SELECT 1
+        FROM Participates
+        WHERE user_id = ? AND tournament_id = ?
+    ) AS participates"
+);
+
+$user_id = (int)$_SESSION['user_id'];
+
+mysqli_stmt_bind_param($stmt, "ii", $user_id, $tournament_id);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+$row = mysqli_fetch_assoc($result);
+$participates = (bool)$row['participates'];
+
+
+
+mysqli_stmt_close($stmt);
 
 $error = $_SESSION['error'] ?? null;
 $success = $_SESSION['success'] ?? null;
@@ -95,64 +116,82 @@ unset($_SESSION['success']);
                 </div>
 
                 <?php if ($t['status'] == 'upcoming'): ?>
-                    <div class="actions">
-                        <?php if ((int)$t['spots_taken'] < (int)$t['capacity']): ?>
-                            
-                            <form method="post" action="handlers/join_tournament_handler.php">
-                                <?php if ((bool)$t['is_team_based'] == false): ?>
-                            
-                                    <input type="text" name="team_name"
-                                        value="<?= htmlspecialchars($prev['team_name'] ?? '') ?>"
-                                        required>
+                    <?php if (!$participates): ?>
+                        <div class="join-form">
+                            <?php if ((int)$t['spots_taken'] < (int)$t['capacity']): ?>
+                                
+                                <form method="post" action="handlers/join_tournament_handler.php">
+                                    <?php if ((bool)$t['is_team_based'] == false): ?>
+                                
+                                        <input type="text" name="team_name"
+                                            value="<?= htmlspecialchars($prev['team_name'] ?? '') ?>"
+                                            required>
 
-                                <?php else: ?>
-                                    <div class="team-choice">
-                                        <label>
-                                            <input type="radio" name="new_team" value="create" checked>
-                                            Създай отбор
-                                        </label>
+                                    <?php else: ?>
+                                        <div class="team-choice">
+                                            <label>
+                                                <input type="radio" name="new_team" value="create" checked>
+                                                Създай отбор
+                                            </label>
 
-                                        <label>
-                                            <input type="radio" name="new_team" value="join">
-                                            Избери отбор
-                                        </label>
-                                    </div>
+                                            <label>
+                                                <input type="radio" name="new_team" value="join">
+                                                Избери отбор
+                                            </label>
+                                        </div>
 
-                                    <div id="create-team-box">
-                                        <label>Име на отбор</label>
-                                        <input type="text"
-                                            name="new_team_name">
-                                    </div>
+                                        <div id="create-team-box">
+                                            <label>Име на отбор</label>
+                                            <input type="text"
+                                                name="new_team_name">
+                                        </div>
 
-                                    <div id="join-team-box" style="display: none;">
-                                        <label>Избери отбор</label>
-                                        <select name="team_name">
-                                            <?php foreach ($teams as $team): ?>
-                                                <option value="<?= htmlspecialchars($team) ?>">
-                                                    <?= htmlspecialchars($team) ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
-                                <?php endif; ?>
+                                        <div id="join-team-box" style="display: none;">
+                                            <label>Избери отбор</label>
+                                            <select name="team_name">
+                                                <?php foreach ($teams as $team): ?>
+                                                    <option value="<?= htmlspecialchars($team) ?>">
+                                                        <?= htmlspecialchars($team) ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                    <?php endif; ?>
 
+                                    <input type="hidden" name="tournament_id"
+                                        value="<?= (int)$t['id'] ?>">
+                                    <button type="submit" class="btn primary">Присъединяване</button>
+                                </form>
+
+                            <?php else: ?>
+                                <button class="btn secondary" disabled>Пълен</button>
+                            <?php endif; ?>
+
+                            <?php if ($success): ?>
+                                <div class="success"><?= htmlspecialchars($success) ?></div>
+                            <?php endif; ?>
+
+                            <?php if ($error): ?>
+                                <div class="error"><?= htmlspecialchars($error) ?></div>
+                            <?php endif; ?>
+                        </div>
+                    <?php else: ?>
+                        <div class="leave-form">  
+                            <form method="post" action="handlers/leave_tournament_handler.php">
                                 <input type="hidden" name="tournament_id"
-                                    value="<?= (int)$t['id'] ?>">
-                                <button type="submit" class="btn primary">Присъединяване</button>
+                                    value="<?= $tournament_id ?>">
+                                <button type="submit" class="btn primary">Напускане</button>
                             </form>
 
-                        <?php else: ?>
-                            <button class="btn secondary" disabled>Пълен</button>
-                        <?php endif; ?>
+                            <?php if ($success): ?>
+                                <div class="success"><?= htmlspecialchars($success) ?></div>
+                            <?php endif; ?>
 
-                        <?php if ($success): ?>
-                            <div class="success"><?= htmlspecialchars($success) ?></div>
-                        <?php endif; ?>
-
-                        <?php if ($error): ?>
-                            <div class="error"><?= htmlspecialchars($error) ?></div>
-                        <?php endif; ?>
-                    </div>
+                            <?php if ($error): ?>
+                                <div class="error"><?= htmlspecialchars($error) ?></div>
+                            <?php endif; ?>
+                        </div>
+                     <?php endif; ?>
                 <?php endif; ?>
             </div>
     </div>
