@@ -98,9 +98,11 @@ while ($row = mysqli_fetch_assoc($result)) {
 mysqli_stmt_close($stmt);
 
 $error = $_SESSION['error'] ?? null;
+$update_score_error = $_SESSION['update_score_error'] ?? null;
 $success = $_SESSION['success'] ?? null;
 
 unset($_SESSION['error']);
+unset($_SESSION['update_score_error']);
 unset($_SESSION['success']);
 ?>
 <!DOCTYPE html>
@@ -235,6 +237,10 @@ unset($_SESSION['success']);
             </div>
     </div>
     <div class="tournament-bracket">
+        <?php if ($update_score_error): ?>
+                <div class="input-group error"><?= htmlspecialchars($update_score_error) ?></div>
+        <?php endif; ?>
+
         <?php if ($t['status'] === 'upcoming'): ?>
             <div>Няма налична схема</div>
         <?php else: ?>
@@ -254,7 +260,13 @@ unset($_SESSION['success']);
                         <?= htmlspecialchars($text) ?></h2>
                     </div>
                     <div class="score">
-                        <label><?= htmlspecialchars($m['side1_nickname']) ?></label>
+                        <label>
+                            <?php if ($m['side1_nickname'] != null): ?>
+                                <label><?= htmlspecialchars($m['side1_nickname']) ?></label>
+                            <?php else: ?>
+                                <label> TBD </label>
+                            <?php endif; ?>
+                        </label>
                         
                         <?php if ($m['score'] != null): ?>
                             <label><?= htmlspecialchars($m['score']) ?></label>
@@ -262,15 +274,29 @@ unset($_SESSION['success']);
                             <label> - </label>
                         <?php endif; ?>
 
-                        <label><?= htmlspecialchars($m['side2_nickname']) ?></label>
+                        <label>
+                            <?php if ($m['side2_nickname'] != null): ?>
+                                <label><?= htmlspecialchars($m['side2_nickname']) ?></label>
+                            <?php else: ?>
+                                <label> TBD </label>
+                            <?php endif; ?>
+                        </label>
                     </div>
 
-                    <?php if ($is_creator && $t['status'] === 'ongoing' && $m['score'] === null): ?>
+                    <?php if ($is_creator && $t['status'] === 'ongoing' 
+                            && $m['score'] === null
+                            && $m['side1_nickname'] != null
+                            && $m['side2_nickname'] != null): ?>
                         <div class="actions">
                             <form method="post" action="handlers/update_score_handler.php">
                                 <input class="input-score" type="number" name="player1_score" min="0" required>
                                 <label>-</label>
-                                <input class="input-score" ?dbtype="number" name="player2_score" min="0" required>
+                                <input class="input-score" type="number" name="player2_score" min="0" required>
+
+                                <input type="hidden" name="match_id"
+                                        value="<?= (int)$m['match_id'] ?>">
+                                <input type="hidden" name="tournament_id"
+                                        value="<?= (int)$t['id'] ?>">
                                 <button class="btn" type="submit">Обнови резултат</button>
                             </form>
                         </div>
