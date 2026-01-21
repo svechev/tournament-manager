@@ -94,7 +94,7 @@ unset($_SESSION['success']);
     <nav>
         <a href="home.php">Tournaments</a>
         <a href="user.php">Profile</a>
-        <a href="logout.php">Logout</a>
+        <a href="handlers/logout_handler.php">Logout</a>
     </nav>
 </header>
 
@@ -112,7 +112,7 @@ unset($_SESSION['success']);
                     } elseif ($status === 'ongoing') {
                     $label = 'Статут: Активен';
                     } else {
-                    $label = htmlspecialchars($status);
+                    $label = 'Статут: Завършил';
                     }
                     ?>
 

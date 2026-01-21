@@ -44,7 +44,7 @@ $categories = ['Образователни','Шах', 'Спорт', 'Елект�
     <nav>
         <a href="home.php">Tournaments</a>
         <a href="user.php">Profile</a>
-        <a href="logout.php">Logout</a>
+        <a href="handlers/logout_handler.php">Logout</a>
     </nav>
 </header>
 
