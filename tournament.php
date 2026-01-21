@@ -103,7 +103,20 @@ unset($_SESSION['success']);
         <div class="tournament-card">
                 <div class="card-header">
                     <h2><?= htmlspecialchars($t['name']) ?></h2>
-                    <span class="tag"><?= htmlspecialchars($t['category']) ?></span>
+                    <span class="tag"><?= htmlspecialchars($t['category']) ?></span><br>
+                    
+                    <?php
+                    $status = $t['status'];
+                    if ($status === 'upcoming') {
+                    $label = 'Статут: Предстоящ';
+                    } elseif ($status === 'ongoing') {
+                    $label = 'Статут: Активен';
+                    } else {
+                    $label = htmlspecialchars($status);
+                    }
+                    ?>
+
+                    <span class="tag"><?= $label ?></span>
                 </div>
 
                 <p class="description">
