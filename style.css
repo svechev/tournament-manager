@@ -48,6 +48,10 @@ a:hover{ text-decoration:underline; }
     user-select:none;
 }
 
+.logo > a {
+    text-decoration: none;
+}
+
 .navbar nav{
     display:flex;
     align-items:center;

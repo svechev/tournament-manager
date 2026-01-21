@@ -113,10 +113,11 @@ unset($_SESSION['success']);
 <body>
 
 <header class="navbar">
-    <div class="logo">TournamentHub</div>
+    <div class="logo"><a href="home.php">TournamentHub</a></div>
     <nav>
         <a href="home.php">Tournaments</a>
         <a href="user.php">Profile</a>
+        <a href="create_tournament.php">Create Tournament</a>
         <a href="handlers/logout_handler.php">Logout</a>
     </nav>
 </header>
