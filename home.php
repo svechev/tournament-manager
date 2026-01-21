@@ -11,7 +11,8 @@ $stmt = mysqli_prepare(
         t.category,
         t.start_datetime,
         t.capacity,
-        t.spots_taken
+        t.spots_taken,
+        t.status
      FROM Tournament t
      WHERE t.status != 'finished'
      ORDER BY t.start_datetime"
@@ -27,7 +28,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 
 mysqli_stmt_close($stmt);
 
-$categories = ['Шах', 'Спорт', 'Електронни спортове', 'Настолни игри'];
+$categories = ['Образователни','Шах', 'Спорт', 'Електронни спортове', 'Настолни игри'];
 ?>
 <!DOCTYPE html>
 <html lang="bg">
@@ -48,10 +49,10 @@ $categories = ['Шах', 'Спорт', 'Електронни спортове', 
 </header>
 
 <main class="container">
-    <h1>Upcoming & Ongoing Tournaments</h1>
+    <h1>Предстоящи и активни турнири</h1>
 
-        <div class="filters" style="margin-bottom:16px;">
-        <label for="category-filter">Category:</label>
+        <div class="filters">
+        <label for="category-filter">Категория:</label>
         <select id="category-filter">
             <option value="">Всички</option>
             <?php foreach ($categories as $cat): ?>
@@ -59,21 +60,42 @@ $categories = ['Шах', 'Спорт', 'Електронни спортове', 
             <?php endforeach; ?>
         </select>
 
-        <label for="sort-date" style="margin-left:16px;">Sort by date:</label>
-        <select id="sort-date">
-            <option value="asc">↑ Ascending</option>
-            <option value="desc">↓ Descending</option>
+        <label for="status-filter">Статут:</label>
+        <select id="status-filter">
+            <option value="">Всички</option>
+            <option value="ongoing">Активни</option>
+            <option value="upcoming">Предстоящи</option>
         </select>
-    </div>
+
+        <label for="sort-date">Сортирай по дата:</label>
+        <select id="sort-date">
+            <option value="asc">↑ Възходящ</option>
+            <option value="desc">↓ Низходящ</option>
+        </select>
+        </div>
 
     <div id="tournament-grid" class="tournament-grid">
         <?php foreach ($tournaments as $t): ?>
             <div class="tournament-card"
              data-date="<?= strtotime($t['start_datetime']) ?>"
-             data-category="<?= htmlspecialchars($t['category']) ?>">
+             data-category="<?= htmlspecialchars($t['category']) ?>"
+             data-status="<?= $t['status'] ?>">
                 <div class="card-header">
                     <h2><?= htmlspecialchars($t['name']) ?></h2>
-                    <span class="tag"><?= htmlspecialchars($t['category']) ?></span>
+
+                    <?php
+                    $status = $t['status'];
+                    if ($status === 'upcoming') {
+                    $label = 'Статут: Предстоящ';
+                    } elseif ($status === 'ongoing') {
+                    $label = 'Статут: Активен';
+                    } else {
+                    $label = htmlspecialchars($status);
+                    }
+                    ?>
+
+                    <span class="tag"><?= htmlspecialchars($t['category']) ?></span><br>
+                    <span class="tag"><?= $label ?></span>
                 </div>
 
                 <p class="description">
@@ -86,18 +108,19 @@ $categories = ['Шах', 'Спорт', 'Електронни спортове', 
                 </div>
 
                 <div class="actions">
-                    <a class="btn secondary"
-                       href="tournament.php?id=<?= (int)$t['id'] ?>">View</a>
-
-                    <?php if ((int)$t['spots_taken'] < (int)$t['capacity']): ?>
-                        <form method="post" action="join.php">
-                            <input type="hidden" name="tournament_id"
-                                   value="<?= (int)$t['id'] ?>">
-                            <button class="btn primary">Join</button>
-                        </form>
-                    <?php else: ?>
-                        <button class="btn secondary" disabled>Full</button>
-                    <?php endif; ?>
+                    
+                    <?php
+                    $status = $t['status'];
+                    if ($status === 'upcoming') {
+                    $button_text = 'Разгледай/ Присъедини се';
+                    } elseif ($status === 'ongoing') {
+                    $button_text = 'Разгледай';
+                    } else {
+                    $button_text = htmlspecialchars($status);
+                    }
+                    ?>
+                    <a class="btn"
+                       href="tournament.php?id=<?= (int)$t['id'] ?>"><?= $button_text ?></a>
                 </div>
             </div>
         <?php endforeach; ?>
@@ -108,14 +131,17 @@ $categories = ['Шах', 'Спорт', 'Електронни спортове', 
     const cards = Array.from(grid.querySelectorAll('.tournament-card'));
     const categoryFilter = document.getElementById('category-filter');
     const sortDate = document.getElementById('sort-date');
+    const statusFilter = document.getElementById('status-filter');
 
    function updateTournaments() {
     const cat = categoryFilter.value;
     const order = sortDate.value;
+    const stat = statusFilter.value;
 
     cards.forEach(card => {
         const cardCat = card.dataset.category;
-        card.style.display = (!cat || cardCat === cat) ? 'block' : 'none';
+        const cardStat = card.dataset.status;
+        card.style.display = ((!cat || cardCat === cat)&&(!stat || cardStat === stat)) ? 'block' : 'none';
     });
 
     const visibleCards = cards.filter(c => c.style.display !== 'none');
@@ -127,6 +153,7 @@ $categories = ['Шах', 'Спорт', 'Електронни спортове', 
 
     visibleCards.forEach(c => grid.appendChild(c));
     }
+    statusFilter.addEventListener('change',updateTournaments);
     categoryFilter.addEventListener('change', updateTournaments);
     sortDate.addEventListener('change', updateTournaments);
     updateTournaments(); 
