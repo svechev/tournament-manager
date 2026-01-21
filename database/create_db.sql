@@ -36,7 +36,7 @@ CREATE TABLE Participates (
     user_id INT UNSIGNED NOT NULL,
     tournament_id INT UNSIGNED NOT NULL,
     team_name VARCHAR(63) NOT NULL,
-    result_position INT UNSIGNED,
+    result_position INT UNSIGNED DEFAULT NULL,
     joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(user_id, tournament_id),
     CONSTRAINT fk_tournament_id
@@ -56,8 +56,8 @@ CREATE TABLE Matches (
   tournament_id INT UNSIGNED NOT NULL,
   match_date DATETIME NOT NULL,
   current_round INT UNSIGNED NOT NULL, 
-  side1_nickname VARCHAR(63) NOT NULL,
-  side2_nickname VARCHAR(63) NOT NULL,
+  side1_nickname VARCHAR(63),
+  side2_nickname VARCHAR(63),
   winner VARCHAR(63) DEFAULT NULL,
   next_match_id INT UNSIGNED DEFAULT NULL,
   score VARCHAR(31) DEFAULT NULL,
@@ -108,3 +108,16 @@ INSERT INTO Matches (match_id, tournament_id, match_date, current_round, side1_n
 VALUES
   (1, 1, '2026-01-02 15:00:00', 2, 'gosho', 'pesho', 'gosho', 3, '1-0'),
   (2, 1, '2026-01-02 16:00:00', 2, 'tosho', 'kris', 'kris',  3, '0-1');
+
+INSERT INTO Participates (user_id, tournament_id, team_name)
+VALUES
+  (1, 3, 'gosho'),
+  (2, 3, 'pesho'),
+  (3, 3, 'tosho'),
+  (4, 3, 'kris');
+
+INSERT INTO Matches (match_id, tournament_id, match_date, current_round, side1_nickname, side2_nickname, winner, next_match_id, score)
+VALUES
+  (6, 3, '2026-01-01 12:30:00', 1, NULL, NULL, NULL, NULL, NULL),
+  (4, 3, '2026-01-01 12:00:00', 2, 'gosho', 'pesho', NULL, 6, NULL),  
+  (5, 3, '2026-01-01 12:00:00', 2, 'tosho', 'kris', NULL, 6, NULL);  

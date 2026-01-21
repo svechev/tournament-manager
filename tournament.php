@@ -259,6 +259,11 @@ unset($_SESSION['success']);
                             ?>    
                         <?= htmlspecialchars($text) ?></h2>
                     </div>
+
+                    <div class="meta">
+                        <span>📅 <?= date("d.m.Y H:i", strtotime($m['match_date'])) ?></span>
+                    </div>
+
                     <div class="score">
                         <label>
                             <?php if ($m['side1_nickname'] != null): ?>

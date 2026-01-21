@@ -1,5 +1,4 @@
 <?php
-// ВАЖНО! актуализира само настоящия мач, не прехвърля нищо към next_match още
 include('../handlers/require_login.php');
 require '../db.php';
 
@@ -49,6 +48,7 @@ $score = $score1 . '-' . $score2;
 mysqli_begin_transaction($conn);
 
 try {
+    // update current match
     $stmt = mysqli_prepare(
     $conn,
     "UPDATE Matches
@@ -62,6 +62,55 @@ try {
         $_SESSION['update_score_error'] = 'Неочаквана грешка!';
         header("Location: ../tournament.php?id=$tournament_id");
         exit;
+    }
+
+    // update next match
+    if ($match['current_round'] != 1) { // not final
+        $next_match_id = (int)$match['next_match_id'];
+    
+        // check which player in next match is NULL
+        $stmt = mysqli_prepare(
+        $conn,
+        "SELECT side1_nickname, side2_nickname
+            FROM Matches
+            WHERE match_id = ?
+            LIMIT 1"
+        );
+        mysqli_stmt_bind_param($stmt, "i", $next_match_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $next_match = mysqli_fetch_assoc($result);
+        
+        // where to insert the winner in the next match
+        $field = "";
+        if ($next_match['side1_nickname'] === null) {
+            $field = 'side1_nickname';
+        }
+        else {
+            $field = 'side2_nickname';
+        }
+
+        // insert
+        $stmt = mysqli_prepare(
+        $conn,
+        "UPDATE Matches
+                SET " . $field . " = ?
+                WHERE match_id = ?"
+            );
+        mysqli_stmt_bind_param($stmt, "si", $winner, $next_match_id);
+        mysqli_stmt_execute($stmt);
+    }
+
+    // if final set tournament to 'finished'
+    else {
+        $stmt = mysqli_prepare(
+        $conn,
+        "UPDATE Tournament
+                SET status = 'finished'
+                WHERE id = ?"
+            );
+        mysqli_stmt_bind_param($stmt, "i", $tournament_id);
+        mysqli_stmt_execute($stmt);
     }
 
     //success
