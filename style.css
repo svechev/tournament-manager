@@ -124,14 +124,14 @@ select:focus, input:focus, textarea:focus{
     border-color: var(--primary);
 }
 
-.tournament-grid{
+.tournament-grid, .match-grid {
     display:grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 18px;
     margin-top: 16px;
 }
 
-.tournament-card{
+.tournament-card, .match-card {
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: 12px;
@@ -143,6 +143,16 @@ select:focus, input:focus, textarea:focus{
 .tournament-card:hover{
     transform: translateY(-2px);
     border-color: rgba(93,169,255,.35);
+}
+
+.input-score {
+    width: 50px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .card-header{

@@ -3,6 +3,7 @@ include('handlers/require_login.php');
 require "db.php";
 
 $tournament_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+$user_id = (int)$_SESSION['user_id'];
 
 if ($tournament_id === false || $tournament_id === null) {
     http_response_code(400);
@@ -22,7 +23,8 @@ $stmt = mysqli_prepare(
         t.status,
         t.capacity,
         t.spots_taken,
-        t.is_team_based
+        t.is_team_based,
+        t.creator_user_id
      FROM Tournament t
      WHERE t.id = ?
      LIMIT 1"
@@ -32,6 +34,12 @@ mysqli_stmt_bind_param($stmt, "i", $tournament_id);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 $t = mysqli_fetch_assoc($result);
+
+$is_creator = false;
+//check if user is the creator
+if ((int)$t['creator_user_id'] == $user_id) {
+    $is_creator = true;
+}
 
 // get a list of the teams
 if ((bool)$t['is_team_based'] == true) {
@@ -62,13 +70,28 @@ $stmt = mysqli_prepare(
     ) AS participates"
 );
 
-$user_id = (int)$_SESSION['user_id'];
-
 mysqli_stmt_bind_param($stmt, "ii", $user_id, $tournament_id);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 $row = mysqli_fetch_assoc($result);
 $participates = (bool)$row['participates'];
+
+// get matches of the tournament
+$matches = [];
+$stmt = mysqli_prepare(
+    $conn,
+    "SELECT *
+        FROM Matches
+        WHERE tournament_id = ?"
+);
+mysqli_stmt_bind_param($stmt, "i", $tournament_id);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+
+while ($row = mysqli_fetch_assoc($result)) {
+    $matches[] = $row;
+}
+
 
 
 
@@ -214,7 +237,48 @@ unset($_SESSION['success']);
         <?php if ($t['status'] === 'upcoming'): ?>
             <div>Няма налична схема</div>
         <?php else: ?>
-            <!-- тук рисуваме схема -->
+            <div class="match-grid">
+                <?php foreach ($matches as $m): ?>
+                <div class="match-card">
+                    <div class="header">
+                        <h2>
+                            <?php
+                                $round = (int)$m['current_round'];
+                                if ($round === 1) {
+                                    $text = 'Финал';
+                                } else {
+                                    $text = '1/' . $round . " финал";
+                                }
+                            ?>    
+                        <?= htmlspecialchars($text) ?></h2>
+                    </div>
+                    <div class="score">
+                        <label><?= htmlspecialchars($m['side1_nickname']) ?></label>
+                        
+                        <?php if ($m['score'] != null): ?>
+                            <label><?= htmlspecialchars($m['score']) ?></label>
+                        <?php else: ?>
+                            <label> - </label>
+                        <?php endif; ?>
+
+                        <label><?= htmlspecialchars($m['side2_nickname']) ?></label>
+                    </div>
+
+                    <?php if ($is_creator && $t['status'] === 'ongoing' && $m['score'] === null): ?>
+                        <div class="actions">
+                            <form method="post" action="handlers/update_score_handler.php">
+                                <input class="input-score" type="number" name="player1_score" min="0" required>
+                                <label>-</label>
+                                <input class="input-score" ?dbtype="number" name="player2_score" min="0" required>
+                                <button class="btn" type="submit">Обнови резултат</button>
+                            </form>
+                        </div>
+                    <?php endif; ?>
+
+                </div>
+                
+                <?php endforeach; ?>
+            </div>
         <?php endif; ?>
     </div>
 </main>
