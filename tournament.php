@@ -78,6 +78,7 @@ $participates = (bool)$row['participates'];
 
 // get matches of the tournament
 $matches = [];
+$rounds = [];
 $stmt = mysqli_prepare(
     $conn,
     "SELECT *
@@ -90,8 +91,12 @@ $result = mysqli_stmt_get_result($stmt);
 
 while ($row = mysqli_fetch_assoc($result)) {
     $matches[] = $row;
+    $round = (int)$row['current_round'];
+    if (!in_array($round, $rounds)) {
+        $rounds[] = $round;
+    }
 }
-
+rsort($rounds);
 
 
 
@@ -244,9 +249,26 @@ unset($_SESSION['success']);
         <?php if ($t['status'] === 'upcoming'): ?>
             <div>Няма налична схема</div>
         <?php else: ?>
+            <label>Избери рунд</label>
+            <select name="round-picker" id="round-picker">
+                <?php foreach ($rounds as $round): ?>
+                    <option value="<?= htmlspecialchars($round) ?>">
+                        <?php
+                            if ($round === 1) {
+                                $text = 'Финал';
+                            } else {
+                                $text = '1/' . $round . " финал";
+                            }
+                        ?>    
+                    <?= htmlspecialchars($text) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+
+
             <div class="match-grid">
                 <?php foreach ($matches as $m): ?>
-                <div class="match-card">
+                <div class="match-card" data-round="<?= (int)$m['current_round'] ?>">
                     <div class="header">
                         <h2>
                             <?php
@@ -265,27 +287,17 @@ unset($_SESSION['success']);
                     </div>
 
                     <div class="score">
-                        <label>
-                            <?php if ($m['side1_nickname'] != null): ?>
-                                <label><?= htmlspecialchars($m['side1_nickname']) ?></label>
-                            <?php else: ?>
-                                <label> TBD </label>
-                            <?php endif; ?>
-                        </label>
+                        <span>
+                            <?= $m['side1_nickname'] != null ? htmlspecialchars($m['side1_nickname']) : 'TBD'?>
+                        </span>
                         
-                        <?php if ($m['score'] != null): ?>
-                            <label><?= htmlspecialchars($m['score']) ?></label>
-                        <?php else: ?>
-                            <label> - </label>
-                        <?php endif; ?>
+                        <span>
+                            <?= $m['score'] != null ? htmlspecialchars($m['score']) : '-'?>
+                        </span>
 
-                        <label>
-                            <?php if ($m['side2_nickname'] != null): ?>
-                                <label><?= htmlspecialchars($m['side2_nickname']) ?></label>
-                            <?php else: ?>
-                                <label> TBD </label>
-                            <?php endif; ?>
-                        </label>
+                        <span>
+                            <?= $m['side2_nickname'] != null ? htmlspecialchars($m['side2_nickname']) : 'TBD'?>
+                        </span>
                     </div>
 
                     <?php if ($is_creator && $t['status'] === 'ongoing' 
@@ -317,4 +329,5 @@ unset($_SESSION['success']);
 
 </body>
 <script src="scripts/tournament.js"></script>
+<script src="scripts/display_rounds.js"></script>
 </html>
