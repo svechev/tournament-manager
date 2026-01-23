@@ -12,7 +12,7 @@ unset($_SESSION['error']);
 unset($_SESSION['success']);
 unset($_SESSION['prev']);
 
-$categories = ['Шах', 'Спорт', 'Електронни спортове', 'Настолни игри'];
+$categories = ['Образователни','Шах', 'Спорт', 'Електронни спортове', 'Настолни игри','Други'];
 ?>
 <!DOCTYPE html>
 <html lang="bg">

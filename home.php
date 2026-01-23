@@ -28,7 +28,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 
 mysqli_stmt_close($stmt);
 
-$categories = ['Образователни','Шах', 'Спорт', 'Електронни спортове', 'Настолни игри'];
+$categories = ['Образователни','Шах', 'Спорт', 'Електронни спортове', 'Настолни игри','Други'];
 ?>
 <!DOCTYPE html>
 <html lang="bg">
