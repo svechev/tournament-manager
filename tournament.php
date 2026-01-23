@@ -159,6 +159,13 @@ unset($_SESSION['success']);
                     <span>👥 <?= (int)$t['spots_taken'] ?> / <?= (int)$t['capacity'] ?></span>
                 </div>
 
+                <?php if ($t['status'] === 'finished' || $t['status'] === 'ongoing'): ?>
+                    <form method="get" action="handlers/export_csv_handler.php">
+                        <input type="hidden" name="id" value="<?= (int)$t['id'] ?>">
+                        <button type="submit" class="btn secondary">Изтегли CSV с класирането</button>
+                    </form>
+                <?php endif; ?>
+
                 <?php if ($t['status'] == 'upcoming'): ?>
                     <?php if (!$participates): ?>
                         <div class="join-form">
