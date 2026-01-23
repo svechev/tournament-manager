@@ -40,7 +40,7 @@ $categories = ['Образователни','Шах', 'Спорт', 'Елект�
 
             <div class="input-group">
                 <label>Описание</label>
-                <textarea name="description" rows="4" required>
+                <textarea style = " width: 100%;" name="description" rows="2" required>
                     <?= htmlspecialchars($prev['description'] ?? '') ?>
                 </textarea>
             </div>
@@ -71,18 +71,24 @@ $categories = ['Образователни','Шах', 'Спорт', 'Елект�
                 <label>Капацитет</label>
                 <input type="number" name="capacity" min="2" value="<?= htmlspecialchars($prev['capacity'] ?? '') ?>" required>
             </div>
-
-            <div class="input-group">
+            
+            <div>
+                <label>
                 <input type="radio" name="is-team-based" value="team"
                     <?= (($prev['is_team_based'] ?? '') === 'team') ? 'checked' : '' ?>>
-                <label for="html">Отборен</label><br>
+                    Отборен
+                </label>
 
+                <label>
                 <input type="radio" name="is-team-based" value="individual"
-                <?= (($prev['is_team_based'] ?? '') === 'individual') ? 'checked' : '' ?>>
-                <label for="css">Индивидуален</label><br>
+                    <?= (($prev['is_team_based'] ?? '') === 'individual') ? 'checked' : '' ?>>
+                    Индивидуален
+                </label>
+            </div><br>
 
+            <div class="input-group">
                 <input type="file" name="participants_csv" accept=".csv">
-                <label>Участници (CSV файл, по избор)</label><br>
+                <label>Участници (CSV файл, по избор)</label>
 
             </div>
 
