@@ -36,11 +36,14 @@ $match = mysqli_fetch_assoc($result);
 
 
 $winner = null;
+$loser = null;
 if ($score1 > $score2) {
     $winner = $match['side1_nickname'];
+    $loser = $match['side2_nickname'];
 }
 else {
     $winner = $match['side2_nickname'];
+    $loser = $match['side1_nickname'];
 }
 $score = $score1 . '-' . $score2;
 
@@ -64,7 +67,20 @@ try {
         exit;
     }
 
-    // update next match
+    // update loser's position
+    $position = (int)$match['current_round'] + 1;
+    $stmt = mysqli_prepare(
+    $conn,
+    "UPDATE Participates
+        SET result_position = ?
+        WHERE tournament_id = ? AND team_name = ?"
+    );
+    mysqli_stmt_bind_param($stmt, "iis", 
+                            $position, $tournament_id, $loser);
+    mysqli_stmt_execute($stmt);
+
+
+    // update next match if not final
     if ($match['current_round'] != 1) { // not final
         $next_match_id = (int)$match['next_match_id'];
     
@@ -101,8 +117,21 @@ try {
         mysqli_stmt_execute($stmt);
     }
 
-    // if final set tournament to 'finished'
+    // if final 
     else {
+        // set winner's position
+        $position = 1;
+        $stmt = mysqli_prepare(
+        $conn,
+        "UPDATE Participates
+            SET result_position = ?
+            WHERE tournament_id = ? AND team_name = ?"
+        );
+        mysqli_stmt_bind_param($stmt, "iis", 
+                                $position, $tournament_id, $winner);
+        mysqli_stmt_execute($stmt);
+
+        // set tournament to 'finished'
         $stmt = mysqli_prepare(
         $conn,
         "UPDATE Tournament
