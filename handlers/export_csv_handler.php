@@ -1,11 +1,30 @@
 <?php
-include('require_login.php');
 require '../db.php';
 
-$tournament_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+$tournament_id =
+    filter_input(INPUT_GET, 'tournament_id', FILTER_VALIDATE_INT)
+    ?? filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+
 if (!$tournament_id) {
     http_response_code(400);
-    exit('Invalid tournament');
+    exit('Invalid tournament ID');
+}
+
+$is_api_call = isset($_GET['token']);
+
+if ($is_api_call) {
+    $envLines = file(__DIR__ . '/../.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($envLines as $line) {
+        if (strpos($line, 'CSV_API_TOKEN=') === 0) {
+            $csvToken = substr($line, strlen('CSV_API_TOKEN='));
+        }
+    }
+    if ($_GET['token'] !== $csvToken) {
+        http_response_code(401);
+        exit('Unauthorized');
+    }
+} else {
+    include 'require_login.php';
 }
 
 $stmt = mysqli_prepare(
@@ -44,6 +63,21 @@ fputcsv($out, ['Участници', 'Позиция']);
 
 while ($row = mysqli_fetch_assoc($res)) {
     $pos = $row['result_position'] ?? 'ще се определи';
+
+     if (is_numeric($pos)) {
+        $pos = (int)$pos;
+        if ($pos === 1) {
+            $pos = 'Първо място';
+        } elseif ($pos === 2) {
+            $pos = 'Второ място';
+        } elseif ($pos === 3 || $pos === 4) {
+            $pos = 'Полуфинал';
+        } elseif ($pos > 4) {
+            $pos = '1/' . ($pos - 1) . ' финал';
+        }
+    } else {
+        $pos = 'ще се определи';
+    }
     fputcsv($out, [$row['team_name'], $pos]);
 }
 
