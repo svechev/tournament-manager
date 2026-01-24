@@ -20,8 +20,19 @@ $categories = ['Образователни','Шах', 'Спорт', 'Елект�
     <meta charset="UTF-8">
     <title>CreateTournament | TournamentHub</title>
     <link rel="stylesheet" href="auth.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+<header class="navbar">
+    <div class="logo"><a href="home.php">TournamentHub</a></div>
+    <nav>
+        <a href="home.php">Tournaments</a>
+        <a href="user.php">Profile</a>
+        <a href="create_tournament.php">Create Tournament</a>
+        <a href="handlers/logout_handler.php">Logout</a>
+    </nav>
+</header>
 
 <div class="auth-container">
     <div class="auth-card">
@@ -40,9 +51,7 @@ $categories = ['Образователни','Шах', 'Спорт', 'Елект�
 
             <div class="input-group">
                 <label>Описание</label>
-                <textarea style = " width: 100%;" name="description" rows="2" required>
-                    <?= htmlspecialchars($prev['description'] ?? '') ?>
-                </textarea>
+                <textarea style = " width: 100%;" name="description" rows="2" required><?= htmlspecialchars($prev['description'] ?? '') ?></textarea>
             </div>
 
             <div class="input-group">

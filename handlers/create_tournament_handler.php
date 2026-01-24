@@ -128,7 +128,6 @@ try {
     if ($csv && $csv['error'] === UPLOAD_ERR_OK) {
         
         $fd = fopen($csv['tmp_name'], 'r');
-        error_log('CSV OPENED');
 
         $stmt = mysqli_prepare(
         $conn,
@@ -165,8 +164,19 @@ try {
                 }
                 catch(Throwable $e) {
                     mysqli_rollback($conn);
-                    $_SESSION['error'] = 'Грешка при вмъкването на потребители!';
-                    $_SESSION['error'] = 'CSV ERROR: ' . $e->getMessage();
+                    switch ($e->getMessage()) {
+                        case 'NAME_EXISTS':
+                            $_SESSION['error'] = 'Потребителите трябва да имат различни имена в турнира!';
+                            break;
+                        case 'ALREADY_JOINED':
+                            $_SESSION['error'] = 'Не може един потребител да бъде присъединен няколко пъти!';
+                            break;
+                        case 'TOURNAMENT_FULL':
+                            $_SESSION['error'] = 'Не вкарвайте повече играчи/отбори от капацитета!';
+                            break;
+                        default:
+                            $_SESSION['error'] = 'Грешка при вмъкването на играчи!';
+        }
 
                     header('Location: ../create_tournament.php');
                     exit;
