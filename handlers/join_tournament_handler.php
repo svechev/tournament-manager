@@ -77,6 +77,12 @@ catch (Throwable $e) {
         case 'TOURNAMENT_FULL':
             $_SESSION['error'] = 'Турнирът вече е запълнен!';
             break;
+        case 'TOURNAMENT_LOCKED':
+            $_SESSION['error'] = 'Турнирът е заключен и не приема участници!';
+            break;
+        case 'TOURNAMENT_NOT_FOUND':
+            $_SESSION['error'] = 'Турнирът не е намерен!';
+            break;
         default:
             $_SESSION['error'] = 'Грешка при присъединяването!';
     }
