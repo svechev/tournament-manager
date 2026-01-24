@@ -1,6 +1,7 @@
 <?php
 include('handlers/require_login.php');
 require "db.php";
+require_once __DIR__ . '/handlers/ensure_tournament_started.php';
 
 $tournament_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 $user_id = (int)$_SESSION['user_id'];
@@ -10,6 +11,7 @@ if ($tournament_id === false || $tournament_id === null) {
     echo 'Invalid tournament ID';
     exit;
 }
+ensureTournamentStarted($conn, $tournament_id);
 
 $stmt = mysqli_prepare(
     $conn,
@@ -158,7 +160,12 @@ unset($_SESSION['success']);
                     <span>📅 <?= date("d.m.Y H:i", strtotime($t['start_datetime'])) ?></span>
                     <span>👥 <?= (int)$t['spots_taken'] ?> / <?= (int)$t['capacity'] ?></span>
                 </div>
-
+                <?php if ($is_creator && $t['status'] === 'upcoming' && (int)$t['spots_taken'] >= 2): ?>
+                    <form method="post" action="handlers/start_tournament_handler.php" style="margin-top:12px;">
+                        <input type="hidden" name="tournament_id" value="<?= (int)$t['id'] ?>">
+                        <button type="submit" class="btn primary">Започни Турнирът</button>
+                    </form>
+                <?php endif; ?>
                 <?php if ($t['status'] === 'finished' || $t['status'] === 'ongoing'): ?>
                     <form method="get" action="handlers/export_csv_handler.php">
                         <input type="hidden" name="id" value="<?= (int)$t['id'] ?>">
