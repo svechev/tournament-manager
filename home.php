@@ -37,7 +37,7 @@ $categories = ['Образователни','Шах', 'Спорт', 'Видео�
 <head>
     <meta charset="UTF-8">
     <title>Home | TournamentHub</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
 

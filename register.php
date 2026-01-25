@@ -15,7 +15,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Register | TournamentHub</title>
-    <link rel="stylesheet" href="auth.css">
+    <link rel="stylesheet" href="styles/auth.css">
 </head>
 <body>
 
