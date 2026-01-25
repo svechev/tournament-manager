@@ -16,7 +16,7 @@ if ($username_email === '' || $password === '') {
 $_SESSION['prev'] = ['username-email' => $username_email];
 
 
-require '../config/db.php';
+require '../../config/db.php';
 
 $stmt = mysqli_prepare(
     $conn,
