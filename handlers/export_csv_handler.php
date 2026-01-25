@@ -24,7 +24,7 @@ if ($is_api_call) {
         exit('Unauthorized');
     }
 } else {
-    include 'require_login.php';
+    include '../helpers/require_login.php';
 }
 
 $stmt = mysqli_prepare(

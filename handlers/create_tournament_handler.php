@@ -1,5 +1,5 @@
 <?php
-include('../handlers/require_login.php');
+include('../helpers/require_login.php');
 
 
 $name = filter_input(INPUT_POST, 'name', 
@@ -92,7 +92,7 @@ if ($csv && $csv['error'] === UPLOAD_ERR_OK) {
 }
 
 require '../config/db.php';
-require 'join_function.php';
+require '../helpers/join_function.php';
 
 $team = ($is_team_based === 'team') ? 1 : 0;
 $user = $_SESSION['user_id'];

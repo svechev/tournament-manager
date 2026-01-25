@@ -1,7 +1,7 @@
 <?php
-include('handlers/require_login.php');
+include('helpers/require_login.php');
 require "config/db.php";
-require_once __DIR__ . '/handlers/ensure_tournament_started.php';
+require_once __DIR__ . '/helpers/ensure_tournament_started.php';
 
 $tournament_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 $user_id = (int)$_SESSION['user_id'];

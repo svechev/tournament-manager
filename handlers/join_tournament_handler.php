@@ -1,5 +1,5 @@
 <?php
-include('../handlers/require_login.php');
+include('../helpers/require_login.php');
 require '../config/db.php';
 
 $user_id = $_SESSION['user_id'];
@@ -50,7 +50,7 @@ if ($new_team == 'create') {
     }
 }
 
-require 'join_function.php';
+require '../helpers/join_function.php';
 
 mysqli_begin_transaction($conn);
 

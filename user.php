@@ -1,5 +1,5 @@
 <?php
-include("handlers/require_login.php");
+include("helpers/require_login.php");
 require "config/db.php";
 
 $userId = $_SESSION['user_id'] ?? null;

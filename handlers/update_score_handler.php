@@ -1,5 +1,5 @@
 <?php
-include('../handlers/require_login.php');
+include('../helpers/require_login.php');
 require '../config/db.php';
 
 $tournament_id = filter_input(INPUT_POST, 'tournament_id', FILTER_VALIDATE_INT);
