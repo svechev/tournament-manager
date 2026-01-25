@@ -1,5 +1,7 @@
 <?php
-require '../db.php';
+require_once __DIR__ . '/../../config/config.php';
+
+require_once ROOT_PATH . 'config/db.php';
 
 $tournament_id =
     filter_input(INPUT_GET, 'tournament_id', FILTER_VALIDATE_INT)
@@ -15,7 +17,7 @@ $headers = getallheaders();
 $token = $headers['Authorization'] ?? null;
 
 if ($token) {
-    $envLines = file(__DIR__ . '/../.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $envLines = file(__DIR__ . '/../../.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $csvToken = null;
 
     foreach ($envLines as $line) {
@@ -36,7 +38,7 @@ if ($token) {
     }
 
 } else {
-    require 'require_login.php';
+    require_once ROOT_PATH . 'helpers/require_login.php';
 }
 
 $stmt = mysqli_prepare(

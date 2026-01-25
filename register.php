@@ -15,7 +15,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Register | TournamentHub</title>
-    <link rel="stylesheet" href="auth.css">
+    <link rel="stylesheet" href="styles/auth.css">
 </head>
 <body>
 
@@ -24,7 +24,7 @@
         <h1 class="logo">TournamentHub</h1>
         <h2>Create account</h2>
 
-        <form action="handlers/register_handler.php" method="post">
+        <form action="handlers/auth/register_handler.php" method="post">
             <?php if ($error): ?>
                 <div class="input-group error"><?= htmlspecialchars($error) ?></div>
             <?php endif; ?>

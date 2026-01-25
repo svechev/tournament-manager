@@ -1,11 +1,12 @@
 <?php
-include('../handlers/require_login.php');
-require '../db.php';
+require_once __DIR__ . '/../../config/config.php';
+
+require_once ROOT_PATH . 'helpers/require_login.php';
+require_once ROOT_PATH . 'config/db.php';
+require_once ROOT_PATH . 'helpers/leave_function.php';
 
 $user_id = $_SESSION['user_id'];
 $tournament_id = filter_input(INPUT_POST, 'tournament_id', FILTER_VALIDATE_INT);
-
-require 'leave_function.php';
 
 mysqli_begin_transaction($conn);
 
@@ -34,5 +35,5 @@ catch (Throwable $e) {
     }
 }
 
-header("Location: ../tournament.php?id=$tournament_id");
+header("Location: ../../tournament.php?id=$tournament_id");
 exit;

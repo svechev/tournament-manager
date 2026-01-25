@@ -1,5 +1,7 @@
 <?php
-include('../handlers/require_login.php');
+require_once __DIR__ . '/../../config/config.php';
+
+require_once ROOT_PATH . 'helpers/require_login.php';
 
 
 $name = filter_input(INPUT_POST, 'name', 
@@ -27,32 +29,32 @@ $_SESSION['prev'] = ['name' => $name,
 if ($name === '' || $description === '' || $category === '' 
     || $is_team_based === null || $start_datetime === '' || $end_datetime === '') {
     $_SESSION['error'] = 'Липсващи полета!';
-    header('Location: ../create_tournament.php');
+    header('Location: ../../create_tournament.php');
     exit;
 }
 
 
 if (strlen($name) > 63) {
     $_SESSION['error'] = 'Името на турнира е твърде дълго!';
-    header('Location: ../create_tournament.php');
+    header('Location: ../../create_tournament.php');
     exit;
 }
 
 if (strlen($description) > 255) {
     $_SESSION['error'] = 'Прекалено дълго описание!';
-    header('Location: ../create_tournament.php');
+    header('Location: ../../create_tournament.php');
     exit;
 }
 
 if (strlen($category) > 63) {
     $_SESSION['error'] = 'Името на категорията е твърде дълго!';
-    header('Location: ../create_tournament.php');
+    header('Location: ../../create_tournament.php');
     exit;
 }
 
 if ($capacity === false || $capacity < 2) {
     $_SESSION['error'] = 'В турнира трябва да има поне 2 участника!';
-    header('Location: ../create_tournament.php');
+    header('Location: ../../create_tournament.php');
     exit;
 }
 
@@ -61,13 +63,13 @@ $end = DateTime::createFromFormat('Y-m-d\TH:i', $end_datetime);
 
 if (!$start || !$end) {
     $_SESSION['error'] = 'Невалиден формат на дата и час!';
-    header('Location: ../create_tournament.php');
+    header('Location: ../../create_tournament.php');
     exit;
 }
 
 if ($end <= $start) {
     $_SESSION['error'] = 'Неправилно зададено време на начало и край!';
-    header('Location: ../create_tournament.php');
+    header('Location: ../../create_tournament.php');
     exit;
 }
 
@@ -79,22 +81,20 @@ if ($csv && $csv['error'] === UPLOAD_ERR_OK) {
 
     if ($csv['size'] > 2 * 1024 * 1024) {
         $_SESSION['error'] = 'CSV файлът е твърде голям!';
-        header('Location: ../create_tournament.php');
+        header('Location: ../../create_tournament.php');
         exit;
     }
 
     $ext = strtolower(pathinfo($csv['name'], PATHINFO_EXTENSION));
     if ($ext !== 'csv') {
         $_SESSION['error'] = 'Невалиден файл!';
-        header('Location: ../create_tournament.php');
+        header('Location: ../../create_tournament.php');
         exit;
     }
 }
 
-
-
-require '../db.php';
-require 'join_function.php';
+require_once ROOT_PATH . 'config/db.php';
+require_once ROOT_PATH . 'helpers/join_function.php';
 
 $team = ($is_team_based === 'team') ? 1 : 0;
 $user = $_SESSION['user_id'];
@@ -120,7 +120,7 @@ try {
         mysqli_rollback($conn);
         $_SESSION['error'] = 'Грешка в базата данни!';
     
-        header('Location: ../create_tournament.php');
+        header('Location: ../../create_tournament.php');
         exit;
     }
 
@@ -178,7 +178,7 @@ try {
                             $_SESSION['error'] = 'Грешка при вмъкването на играчи!';
         }
 
-                    header('Location: ../create_tournament.php');
+                    header('Location: ../../create_tournament.php');
                     exit;
                 }
             }
@@ -190,12 +190,12 @@ try {
     mysqli_commit($conn);
 
     // success
-    header('Location: ../home.php');
+    header('Location: ../../home.php');
     exit;
 } 
 catch (Throwable $e) {
     mysqli_rollback($conn);
     $_SESSION['error'] = 'Неочаквана грешка!';
-    header('Location: ../create_tournament.php');
+    header('Location: ../../create_tournament.php');
     exit;
 }

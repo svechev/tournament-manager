@@ -1,7 +1,7 @@
 <?php
-include('handlers/require_login.php');
-require "db.php";
-require_once __DIR__ . '/handlers/ensure_tournament_started.php';
+require_once __DIR__ . '/helpers/require_login.php';
+require_once __DIR__ . '/config/db.php';
+require_once __DIR__ . '/helpers/ensure_tournament_started.php';
 
 $tournament_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 $user_id = (int)$_SESSION['user_id'];
@@ -117,7 +117,7 @@ unset($_SESSION['success']);
 <head>
     <meta charset="UTF-8">
     <title>Home | TournamentHub</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
 
@@ -127,7 +127,7 @@ unset($_SESSION['success']);
         <a href="home.php">Tournaments</a>
         <a href="user.php">Profile</a>
         <a href="create_tournament.php">Create Tournament</a>
-        <a href="handlers/logout_handler.php">Logout</a>
+        <a href="handlers/auth/logout_handler.php">Logout</a>
     </nav>
 </header>
 
@@ -161,13 +161,13 @@ unset($_SESSION['success']);
                     <span>👥 <?= (int)$t['spots_taken'] ?> / <?= (int)$t['capacity'] ?></span>
                 </div>
                 <?php if ($is_creator && $t['status'] === 'upcoming' && (int)$t['spots_taken'] >= 2): ?>
-                    <form method="post" action="handlers/start_tournament_handler.php" style="margin-top:12px;">
+                    <form method="post" action="handlers/tournament/start_tournament_handler.php" style="margin-top:12px;">
                         <input type="hidden" name="tournament_id" value="<?= (int)$t['id'] ?>">
                         <button type="submit" class="btn primary">Започни Турнирът</button>
                     </form>
                 <?php endif; ?>
                 <?php if ($t['status'] === 'finished' || $t['status'] === 'ongoing'): ?>
-                    <form method="get" action="handlers/export_csv_handler.php">
+                    <form method="get" action="handlers/export/export_csv_handler.php">
                         <input type="hidden" name="id" value="<?= (int)$t['id'] ?>">
                         <button type="submit" class="btn secondary">Изтегли CSV с класирането</button>
                     </form>
@@ -178,7 +178,7 @@ unset($_SESSION['success']);
                         <div class="join-form">
                             <?php if ((int)$t['spots_taken'] < (int)$t['capacity']): ?>
                                 
-                                <form method="post" action="handlers/join_tournament_handler.php">
+                                <form method="post" action="handlers/participation/join_tournament_handler.php">
                                     <?php if ((bool)$t['is_team_based'] == false): ?>
                                         <label>
                                             Прякор
@@ -237,7 +237,7 @@ unset($_SESSION['success']);
                         </div>
                     <?php else: ?>
                         <div class="leave-form">  
-                            <form method="post" action="handlers/leave_tournament_handler.php">
+                            <form method="post" action="handlers/participation/leave_tournament_handler.php">
                                 <input type="hidden" name="tournament_id"
                                     value="<?= $tournament_id ?>">
                                 <button type="submit" class="btn primary">Напускане</button>
@@ -319,7 +319,7 @@ unset($_SESSION['success']);
                             && $m['side1_nickname'] != null
                             && $m['side2_nickname'] != null): ?>
                         <div class="actions">
-                            <form method="post" action="handlers/update_score_handler.php">
+                            <form method="post" action="handlers/tournament/update_score_handler.php">
                                 <input class="input-score" type="number" name="player1_score" min="0" required>
                                 <label>-</label>
                                 <input class="input-score" type="number" name="player2_score" min="0" required>

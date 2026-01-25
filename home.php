@@ -1,7 +1,7 @@
 <?php
-include('handlers/require_login.php');
-require "db.php";
-require_once __DIR__ . '/handlers/ensure_due_tournaments_started.php';
+require_once __DIR__ . '/helpers/require_login.php';
+require_once __DIR__ . '/config/db.php';
+require_once __DIR__ . '/helpers/ensure_due_tournaments_started.php';
 ensureDueTournamentsStarted($conn);
 
 $stmt = mysqli_prepare(
@@ -37,7 +37,7 @@ $categories = ['Образователни','Шах', 'Спорт', 'Видео�
 <head>
     <meta charset="UTF-8">
     <title>Home | TournamentHub</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
 
@@ -47,7 +47,7 @@ $categories = ['Образователни','Шах', 'Спорт', 'Видео�
         <a href="home.php">Tournaments</a>
         <a href="user.php">Profile</a>
         <a href="create_tournament.php">Create Tournament</a>
-        <a href="handlers/logout_handler.php">Logout</a>
+        <a href="handlers/auth/logout_handler.php">Logout</a>
     </nav>
 </header>
 

@@ -1,6 +1,8 @@
 <?php
-include('../handlers/require_login.php');
-require '../db.php';
+require_once __DIR__ . '/../../config/config.php';
+
+require_once ROOT_PATH . 'helpers/require_login.php';
+require_once ROOT_PATH . 'config/db.php';
 
 $tournament_id = filter_input(INPUT_POST, 'tournament_id', FILTER_VALIDATE_INT);
 $match_id = filter_input(INPUT_POST, 'match_id', FILTER_VALIDATE_INT);
@@ -11,13 +13,13 @@ $score2 = filter_input(INPUT_POST, 'player2_score', FILTER_VALIDATE_INT);
 if ($score1 === null || $score1 === false || $score2 === null || $score2 === false 
     || $score1 < 0 || $score2 < 0) {
     $_SESSION['update_score_error'] = 'Неправилно зададен резултат!';
-    header("Location: ../tournament.php?id=$tournament_id");
+    header("Location: ../../tournament.php?id=$tournament_id");
     exit;
 }
 
 if ($score1 === $score2) {
     $_SESSION['update_score_error'] = 'Избери победител!';
-    header("Location: ../tournament.php?id=$tournament_id");
+    header("Location: ../../tournament.php?id=$tournament_id");
     exit;
 }
 
@@ -63,7 +65,7 @@ try {
 
     if (mysqli_stmt_affected_rows($stmt) !== 1) {
         $_SESSION['update_score_error'] = 'Неочаквана грешка!';
-        header("Location: ../tournament.php?id=$tournament_id");
+        header("Location: ../../tournament.php?id=$tournament_id");
         exit;
     }
 
@@ -150,5 +152,5 @@ catch (Throwable $e) {
     $_SESSION['update_score_error'] = 'Неочаквана грешка!';
 }
 
-header("Location: ../tournament.php?id=$tournament_id");
+header("Location: ../../tournament.php?id=$tournament_id");
 exit;

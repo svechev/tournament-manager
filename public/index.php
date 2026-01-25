@@ -17,7 +17,7 @@ switch ($path) {
         break;
 
     case 'tournament-results':
-        require __DIR__ . '/../handlers/export_csv_handler.php';
+        require __DIR__ . '/../handlers/export/export_csv_handler.php';
         break;
 
     default:
