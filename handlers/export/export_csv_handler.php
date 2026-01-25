@@ -1,5 +1,7 @@
 <?php
-require '../config/db.php';
+require_once __DIR__ . '/../../config/config.php';
+
+require_once ROOT_PATH . 'config/db.php';
 
 $tournament_id =
     filter_input(INPUT_GET, 'tournament_id', FILTER_VALIDATE_INT)
@@ -24,7 +26,7 @@ if ($is_api_call) {
         exit('Unauthorized');
     }
 } else {
-    include '../helpers/require_login.php';
+    require_once ROOT_PATH . 'helpers/require_login.php';
 }
 
 $stmt = mysqli_prepare(

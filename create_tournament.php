@@ -1,6 +1,6 @@
 <?php
-include('helpers/require_login.php');
-require "config/db.php";
+require_once __DIR__ . '/helpers/require_login.php';
+require_once __DIR__ . '/config/db.php';
 
 $minDatetime = date('Y-m-d\T00:00', strtotime('+1 day'));
 
@@ -30,7 +30,7 @@ $categories = ['Образователни','Шах', 'Спорт', 'Елект�
         <a href="home.php">Tournaments</a>
         <a href="user.php">Profile</a>
         <a href="create_tournament.php">Create Tournament</a>
-        <a href="handlers/logout_handler.php">Logout</a>
+        <a href="handlers/auth/logout_handler.php">Logout</a>
     </nav>
 </header>
 
@@ -38,7 +38,7 @@ $categories = ['Образователни','Шах', 'Спорт', 'Елект�
     <div class="auth-card">
         <h2>Създай нов турнир</h2>
 
-        <form action="handlers/create_tournament_handler.php" method="post"
+        <form action="handlers/tournament/create_tournament_handler.php" method="post"
             enctype="multipart/form-data">
             <?php if ($error): ?>
                 <div class="input-group error"><?= htmlspecialchars($error) ?></div>

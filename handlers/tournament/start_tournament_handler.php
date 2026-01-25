@@ -1,7 +1,9 @@
 <?php
-include('../helpers/require_login.php');
-require '../config/db.php';
-require_once __DIR__ . '/../helpers/generate_matches_function.php';
+require_once __DIR__ . '/../../config/config.php';
+
+require_once ROOT_PATH . 'helpers/require_login.php';
+require_once ROOT_PATH . 'config/db.php';
+require_once ROOT_PATH . 'helpers/generate_matches_function.php';
 
 $tournament_id = filter_input(INPUT_POST, 'tournament_id', FILTER_VALIDATE_INT);
 $user_id = (int)$_SESSION['user_id'];
@@ -30,13 +32,13 @@ if (!$t || (int)$t['creator_user_id'] !== $user_id) {
 
 if ($t['status'] !== 'upcoming') {
     $_SESSION['error'] = 'Турнирът вече е стартиран/завършен!';
-    header("Location: ../tournament.php?id=$tournament_id");
+    header("Location: ../../tournament.php?id=$tournament_id");
     exit;
 }
 
 if ((int)$t['spots_taken'] < 2) {
     $_SESSION['error'] = 'Нужни са поне 2 участника/отбора!';
-    header("Location: ../tournament.php?id=$tournament_id");
+    header("Location: ../../tournament.php?id=$tournament_id");
     exit;
 }
 
@@ -60,5 +62,5 @@ try {
     $_SESSION['error'] = 'Грешка при стартиране: ' . $e->getMessage(); // временно за дебъг
 }
 
-header("Location: ../tournament.php?id=$tournament_id");
+header("Location: ../../tournament.php?id=$tournament_id");
 exit;

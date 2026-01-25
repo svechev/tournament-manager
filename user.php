@@ -1,12 +1,9 @@
 <?php
-include("helpers/require_login.php");
-require "config/db.php";
+require_once __DIR__ . '/helpers/require_login.php';
+require_once __DIR__ . '/config/db.php';
 
-$userId = $_SESSION['user_id'] ?? null;
-if (!$userId) {
-    header("Location: login.php");
-    exit;
-}
+
+$userId = (int)$_SESSION['user_id'];
 
 /* User info */
 $stmt = mysqli_prepare(
@@ -26,7 +23,7 @@ if (!$user) {
     exit;
 }
 
-/* Active tournaments */
+// active tournaments
 $stmt = mysqli_prepare(
     $conn,
     "SELECT t.id, t.name, t.start_datetime
@@ -45,7 +42,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 }
 mysqli_stmt_close($stmt);
 
-/* Finished tournaments */
+// finished tournaments
 $stmt = mysqli_prepare(
     $conn,
     "SELECT t.id, t.name, t.category, p.result_position
@@ -79,7 +76,7 @@ mysqli_stmt_close($stmt);
         <a href="home.php">Tournaments</a>
         <a href="user.php">Profile</a>
         <a href="create_tournament.php">Create Tournament</a>
-        <a href="handlers/logout_handler.php">Logout</a>
+        <a href="handlers/auth/logout_handler.php">Logout</a>
     </nav>
 </header>
 

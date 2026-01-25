@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/ensure_tournament_started.php';
+require_once __DIR__ . '/../config/config.php';
+require_once ROOT_PATH . 'helpers/ensure_tournament_started.php';
 
 function ensureDueTournamentsStarted(mysqli $conn): void
 {

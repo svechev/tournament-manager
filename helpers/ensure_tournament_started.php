@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/generate_matches_function.php';
+require_once __DIR__ . '/../config/config.php';
+require_once ROOT_PATH . 'helpers/generate_matches_function.php';
 
 function ensureTournamentStarted(mysqli $conn, int $tournament_id): void
 {

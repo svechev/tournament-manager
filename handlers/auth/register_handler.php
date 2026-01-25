@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../../config/config.php';
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -15,42 +17,42 @@ $_SESSION['prev'] = ['username' => $username,
 
 if ($username === '' || $email === '' || $password === '' || $confirm_password === '') {
     $_SESSION['error'] = 'Липсващи полета!';
-    header('Location: ../register.php');
+    header('Location: ../../register.php');
     exit;
 }
 
 
 if (strlen($username) > 63) {
     $_SESSION['error'] = 'Потребителското име е твърде дълго!';
-    header('Location: ../register.php');
+    header('Location: ../../register.php');
     exit;
 }
 
 if (strlen($email) > 255) {
     $_SESSION['error'] = 'Имейлът е твърде дълъг!';
-    header('Location: ../register.php');
+    header('Location: ../../register.php');
     exit;
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $_SESSION['error'] = 'Невалиден имейл!';
-    header('Location: ../register.php');
+    header('Location: ../../register.php');
     exit;
 }
 
 if (strlen($password) < 6) {
     $_SESSION['error'] = 'Паролата трябва да е поне 6 символа!';
-    header('Location: ../register.php');
+    header('Location: ../../register.php');
     exit;
 }
 
 if ($password != $confirm_password) {
     $_SESSION['error'] = 'Паролите не съвпадат!';
-    header('Location: ../register.php');
+    header('Location: ../../register.php');
     exit;
 }
 
-require '../config/db.php';
+require ROOT_PATH . 'config/db.php';
 
 $pass_hash = password_hash($password, PASSWORD_ARGON2ID);
 
@@ -79,7 +81,7 @@ catch(mysqli_sql_exception $e) {
         $_SESSION['error'] = 'Грешка в базата данни!';
     }
 
-    header('Location: ../register.php');
+    header('Location: ../../register.php');
     exit;
 }
 
@@ -97,5 +99,5 @@ session_regenerate_id(true);
 $new_user_id = mysqli_insert_id($conn);
 $_SESSION['user_id'] = $new_user_id;
 $_SESSION['username'] = $username;
-header('Location: ../home.php');
+header('Location: ../../home.php');
 exit;

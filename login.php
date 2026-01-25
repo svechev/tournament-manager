@@ -24,7 +24,7 @@
         <h1 class="logo">TournamentHub</h1>
         <h2>Sign in</h2>
 
-        <form action="handlers/login_handler.php" method="post">
+        <form action="handlers/auth/login_handler.php" method="post">
             <?php if ($error): ?>
                 <div class="input-group error"><?= htmlspecialchars($error) ?></div>
             <?php endif; ?>

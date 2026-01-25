@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../../config/config.php';
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -8,7 +10,7 @@ $password = $_POST['password'];
 
 if ($username_email === '' || $password === '') {
     $_SESSION['error'] = 'Липсващи полета!';
-    header('Location: ../login.php');
+    header('Location: ../../login.php');
     exit;
 }
 
@@ -16,7 +18,7 @@ if ($username_email === '' || $password === '') {
 $_SESSION['prev'] = ['username-email' => $username_email];
 
 
-require '../../config/db.php';
+require_once ROOT_PATH . 'config/db.php';
 
 $stmt = mysqli_prepare(
     $conn,
@@ -32,7 +34,7 @@ if ($result->num_rows == 0) {
     $_SESSION['error'] = 'Името или имейлът не съществува!';
 
     mysqli_stmt_close($stmt);
-    header('Location: ../login.php');
+    header('Location: ../../login.php');
     exit;
 }
 else {
@@ -55,12 +57,12 @@ else {
 
         $_SESSION['user_id'] = $row['id'];
         $_SESSION['username'] = $row['username'];
-        header('Location: ../home.php');
+        header('Location: ../../home.php');
         exit;
     }
     else {
         $_SESSION['error'] = 'Неправилна парола!';
-        header('Location: ../login.php');
+        header('Location: ../../login.php');
         exit;
     }
 }

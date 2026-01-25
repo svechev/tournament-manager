@@ -1,6 +1,8 @@
 <?php
-include('../helpers/require_login.php');
-require '../config/db.php';
+require_once __DIR__ . '/../../config/config.php';
+
+require_once ROOT_PATH . 'helpers/require_login.php';
+require_once ROOT_PATH . 'config/db.php';
 
 $user_id = $_SESSION['user_id'];
 $tournament_id = filter_input(INPUT_POST, 'tournament_id', FILTER_VALIDATE_INT);
@@ -19,13 +21,13 @@ else {
 // проверки
 if ($team_name === '') {
     $_SESSION['error'] = 'Липсва отбор!';
-    header('Location: ../tournament.php?id=' . $tournament_id);
+    header('Location: ../../tournament.php?id=' . $tournament_id);
     exit;
 }
 
 if (strlen($team_name) > 63) {
     $_SESSION['error'] = 'Прекалено дълго име!';
-    header('Location: ../tournament.php?id=' . $tournament_id);
+    header('Location: ../../tournament.php?id=' . $tournament_id);
     exit;
 }
 if ($new_team == 'create') {
@@ -44,13 +46,13 @@ if ($new_team == 'create') {
     while ($row = mysqli_fetch_assoc($result)) {
         if ($row['team_name'] == $team_name) {
             $_SESSION['error'] = 'Този отбор вече съществува!';
-            header('Location: ../tournament.php?id=' . $tournament_id);
+            header('Location: ../../tournament.php?id=' . $tournament_id);
             exit;
         }
     }
 }
 
-require '../helpers/join_function.php';
+require_once ROOT_PATH . 'helpers/join_function.php';
 
 mysqli_begin_transaction($conn);
 
@@ -88,5 +90,5 @@ catch (Throwable $e) {
     }
 }
 
-header("Location: ../tournament.php?id=$tournament_id");
+header("Location: ../../tournament.php?id=$tournament_id");
 exit;
