@@ -1,5 +1,5 @@
 <?php
-require '../db.php';
+require '../config/db.php';
 
 $tournament_id =
     filter_input(INPUT_GET, 'tournament_id', FILTER_VALIDATE_INT)

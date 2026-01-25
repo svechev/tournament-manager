@@ -1,6 +1,6 @@
 <?php
 include("handlers/require_login.php");
-require "db.php";
+require "config/db.php";
 
 $userId = $_SESSION['user_id'] ?? null;
 if (!$userId) {

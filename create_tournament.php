@@ -1,6 +1,6 @@
 <?php
 include('handlers/require_login.php');
-require "db.php";
+require "config/db.php";
 
 $minDatetime = date('Y-m-d\T00:00', strtotime('+1 day'));
 

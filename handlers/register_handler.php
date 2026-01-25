@@ -50,7 +50,7 @@ if ($password != $confirm_password) {
     exit;
 }
 
-require '../db.php';
+require '../config/db.php';
 
 $pass_hash = password_hash($password, PASSWORD_ARGON2ID);
 

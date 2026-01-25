@@ -91,9 +91,7 @@ if ($csv && $csv['error'] === UPLOAD_ERR_OK) {
     }
 }
 
-
-
-require '../db.php';
+require '../config/db.php';
 require 'join_function.php';
 
 $team = ($is_team_based === 'team') ? 1 : 0;

@@ -1,6 +1,6 @@
 <?php
 include('handlers/require_login.php');
-require "db.php";
+require "config/db.php";
 require_once __DIR__ . '/handlers/ensure_tournament_started.php';
 
 $tournament_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);

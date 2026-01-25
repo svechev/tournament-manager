@@ -1,6 +1,6 @@
 <?php
 include('../handlers/require_login.php');
-require '../db.php';
+require '../config/db.php';
 require_once __DIR__ . '/generate_matches_function.php';
 
 $tournament_id = filter_input(INPUT_POST, 'tournament_id', FILTER_VALIDATE_INT);

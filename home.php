@@ -1,6 +1,6 @@
 <?php
 include('handlers/require_login.php');
-require "db.php";
+require "config/db.php";
 require_once __DIR__ . '/handlers/ensure_due_tournaments_started.php';
 ensureDueTournamentsStarted($conn);
 

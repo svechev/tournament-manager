@@ -1,6 +1,6 @@
 <?php
 include('../handlers/require_login.php');
-require '../db.php';
+require '../config/db.php';
 
 $user_id = $_SESSION['user_id'];
 $tournament_id = filter_input(INPUT_POST, 'tournament_id', FILTER_VALIDATE_INT);
