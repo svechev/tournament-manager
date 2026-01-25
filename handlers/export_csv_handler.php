@@ -10,21 +10,33 @@ if (!$tournament_id) {
     exit('Invalid tournament ID');
 }
 
-$is_api_call = isset($_GET['token']);
 
-if ($is_api_call) {
+$headers = getallheaders();
+$token = $headers['Authorization'] ?? null;
+
+if ($token) {
     $envLines = file(__DIR__ . '/../.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $csvToken = null;
+
     foreach ($envLines as $line) {
         if (strpos($line, 'CSV_API_TOKEN=') === 0) {
             $csvToken = substr($line, strlen('CSV_API_TOKEN='));
+            break;
         }
     }
-    if ($_GET['token'] !== $csvToken) {
+
+    if (!$csvToken) {
+        http_response_code(500);
+        exit('Server misconfiguration');
+    }
+
+    if ($token !== $csvToken) {
         http_response_code(401);
         exit('Unauthorized');
     }
+
 } else {
-    include 'require_login.php';
+    require 'require_login.php';
 }
 
 $stmt = mysqli_prepare(

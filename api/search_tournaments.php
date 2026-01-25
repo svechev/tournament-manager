@@ -1,13 +1,25 @@
 <?php
-require_once __DIR__ . '/../db.php';
-
-$token = $_GET['token'];
+require  '../db.php';
 
 $envLines = file(__DIR__ . '/../.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+$csvToken = null;
 foreach ($envLines as $line) {
     if (strpos($line, 'CSV_API_TOKEN=') === 0) {
         $csvToken = substr($line, strlen('CSV_API_TOKEN='));
     }
+}
+
+if (!$csvToken) {
+    http_response_code(500);
+    exit('Server misconfiguration');
+}
+
+$headers = getallheaders();
+$token = $headers['Authorization'] ?? null;
+
+if (!$token) {
+    http_response_code(401);
+    exit('Unauthorized: missing Authorization header');
 }
 
 if ($token !== $csvToken) {
@@ -15,8 +27,8 @@ if ($token !== $csvToken) {
     exit('Unauthorized');
 }
 
-$q = trim($_GET['q'] ?? '');
-if ($q === '') {
+$str = trim($_GET['str'] ?? '');
+if ($str === '') {
     http_response_code(400);
     exit('Missing search query');
 }
@@ -28,7 +40,7 @@ $sql = "
 ";
 $stmt = mysqli_prepare($conn, $sql);
 
-$like = '%' . $q . '%';
+$like = '%' . $str . '%';
 mysqli_stmt_bind_param($stmt, 's', $like);
 
 mysqli_stmt_execute($stmt);
