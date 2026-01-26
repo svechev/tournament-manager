@@ -64,36 +64,40 @@ function generateMatches(mysqli $conn, int $tournament_id): void
 
     $matchIdsByRound = [];
 
-    $insertMatch = function(int $round, ?int $next_match_id) use ($conn, $tournament_id, $start_dt): int {
+    $insertMatch = function(int $phase, ?int $next_match_id) use ($conn, $tournament_id, $start_dt): int {
         if ($next_match_id === null) {
             $stmt = mysqli_prepare($conn,
                 "INSERT INTO Matches (tournament_id, match_date, current_round, next_match_id)
                  VALUES (?, ?, ?, NULL)"
             );
-            mysqli_stmt_bind_param($stmt, "isi", $tournament_id, $start_dt, $round);
+            mysqli_stmt_bind_param($stmt, "isi", $tournament_id, $start_dt, $phase);
         } else {
             $stmt = mysqli_prepare($conn,
                 "INSERT INTO Matches (tournament_id, match_date, current_round, next_match_id)
                  VALUES (?, ?, ?, ?)"
             );
-            mysqli_stmt_bind_param($stmt, "isii", $tournament_id, $start_dt, $round, $next_match_id);
+            mysqli_stmt_bind_param($stmt, "isii", $tournament_id, $start_dt, $phase, $next_match_id);
         }
         mysqli_stmt_execute($stmt);
         return (int)mysqli_insert_id($conn);
     };
 
+
     $finalId = $insertMatch(1, null);
     $matchIdsByRound[1] = [$finalId];
 
-    for ($r=2; $r<=$rounds; $r++) {
-        $numMatches = 1 << ($r-1);
+    for ($r = 2; $r <= $rounds; $r++) {
+        $phase = 1 << ($r - 1);     // 2,4,8,16...
+        $numMatches = $phase;
+    
         $matchIdsByRound[$r] = [];
-        for ($i=0; $i<$numMatches; $i++) {
-            $parentId = $matchIdsByRound[$r-1][intdiv($i,2)];
-            $id = $insertMatch($r, $parentId);
+        for ($i = 0; $i < $numMatches; $i++) {
+            $parentId = $matchIdsByRound[$r - 1][intdiv($i, 2)];
+            $id = $insertMatch($phase, $parentId);
             $matchIdsByRound[$r][$i] = $id;
         }
     }
+
 
     $bottomRound = $rounds;
     $numBottomMatches = 1 << ($bottomRound-1);
