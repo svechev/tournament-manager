@@ -1,7 +1,8 @@
 <?php
+require_once __DIR__ . '/../config/config.php';
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$base = '/tournament-manager/public';
+$base = '/' . basename(realpath(ROOT_PATH));
 
 if (strpos($uri, $base) === 0) {
     $path = substr($uri, strlen($base));
