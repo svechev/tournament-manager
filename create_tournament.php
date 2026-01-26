@@ -2,7 +2,7 @@
 require_once __DIR__ . '/helpers/require_login.php';
 require_once __DIR__ . '/config/db.php';
 
-$minDatetime = date('Y-m-d\T00:00', strtotime('+1 day'));
+$minDatetime = date('Y-m-d\T00:00', strtotime('now'));
 
 $error = $_SESSION['error'] ?? null;
 $prev = $_SESSION['prev'] ?? [];
