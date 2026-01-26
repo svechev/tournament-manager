@@ -129,6 +129,9 @@ try {
         
         $fd = fopen($csv['tmp_name'], 'r');
 
+        // skip header row
+        fgetcsv($fd, 150, ','); 
+
         $stmt = mysqli_prepare(
         $conn,
         "INSERT INTO Participates (user_id, tournament_id, team_name)

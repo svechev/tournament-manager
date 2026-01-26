@@ -104,6 +104,7 @@ rsort($rounds);
 
 mysqli_stmt_close($stmt);
 
+$prev = $_SESSION['prev'] ?? [];
 $error = $_SESSION['error'] ?? null;
 $update_score_error = $_SESSION['update_score_error'] ?? null;
 $success = $_SESSION['success'] ?? null;
@@ -111,6 +112,7 @@ $success = $_SESSION['success'] ?? null;
 unset($_SESSION['error']);
 unset($_SESSION['update_score_error']);
 unset($_SESSION['success']);
+unset($_SESSION['prev']);
 ?>
 <!DOCTYPE html>
 <html lang="bg">
@@ -124,10 +126,10 @@ unset($_SESSION['success']);
 <header class="navbar">
     <div class="logo"><a href="home.php">TournamentHub</a></div>
     <nav>
-        <a href="home.php">Tournaments</a>
-        <a href="user.php">Profile</a>
-        <a href="create_tournament.php">Create Tournament</a>
-        <a href="handlers/auth/logout_handler.php">Logout</a>
+        <a href="home.php">Турнири</a>
+        <a href="user.php">Профил</a>
+        <a href="create_tournament.php">Създай Турнир</a>
+        <a href="handlers/auth/logout_handler.php">Изход</a>
     </nav>
 </header>
 
@@ -163,7 +165,7 @@ unset($_SESSION['success']);
                 <?php if ($is_creator && $t['status'] === 'upcoming' && (int)$t['spots_taken'] >= 2): ?>
                     <form method="post" action="handlers/tournament/start_tournament_handler.php" style="margin-top:12px;">
                         <input type="hidden" name="tournament_id" value="<?= (int)$t['id'] ?>">
-                        <button type="submit" class="btn primary">Започни Турнирът</button>
+                        <button type="submit" class="btn primary">Започни Турнира</button>
                     </form>
                 <?php endif; ?>
                 <?php if ($t['status'] === 'finished' || $t['status'] === 'ongoing'): ?>
@@ -266,7 +268,12 @@ unset($_SESSION['success']);
             <label>Избери рунд</label>
             <select name="round-picker" id="round-picker">
                 <?php foreach ($rounds as $round): ?>
-                    <option value="<?= htmlspecialchars($round) ?>">
+                    <option value="<?= htmlspecialchars($round) ?>"
+                        <?php 
+                            if (isset($prev['current_round']) && $round == $prev['current_round']) {
+                                echo 'selected';
+                            }
+                        ?>>
                         <?php
                             if ($round === 1) {
                                 $text = 'Финал';
@@ -324,6 +331,8 @@ unset($_SESSION['success']);
                                 <label>-</label>
                                 <input class="input-score" type="number" name="player2_score" min="0" required>
 
+                                <input type="hidden" name="current_round"
+                                        value="<?= (int)$m['current_round'] ?>">
                                 <input type="hidden" name="match_id"
                                         value="<?= (int)$m['match_id'] ?>">
                                 <input type="hidden" name="tournament_id"

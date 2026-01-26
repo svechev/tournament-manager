@@ -44,10 +44,10 @@ $categories = ['Образователни','Шах', 'Спорт', 'Видео�
 <header class="navbar">
     <div class="logo"><a href="home.php">TournamentHub</a></div>
     <nav>
-        <a href="home.php">Tournaments</a>
-        <a href="user.php">Profile</a>
-        <a href="create_tournament.php">Create Tournament</a>
-        <a href="handlers/auth/logout_handler.php">Logout</a>
+        <a href="home.php">Турнири</a>
+        <a href="user.php">Профил</a>
+        <a href="create_tournament.php">Създай Турнир</a>
+        <a href="handlers/auth/logout_handler.php">Изход</a>
     </nav>
 </header>
 

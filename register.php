@@ -22,7 +22,7 @@
 <div class="auth-container">
     <div class="auth-card">
         <h1 class="logo">TournamentHub</h1>
-        <h2>Create account</h2>
+        <h2>Създай Акаунт</h2>
 
         <form action="handlers/auth/register_handler.php" method="post">
             <?php if ($error): ?>
@@ -30,31 +30,31 @@
             <?php endif; ?>
         
             <div class="input-group">
-                <label>Username</label>
+                <label>Потребителско Име</label>
                 <input type="text" name="username" value="<?= htmlspecialchars($prev['username'] ?? '') ?>" required>
             </div>
 
             <div class="input-group">
-                <label>Email</label>
+                <label>Имейл Адрес</label>
                 <input type="email" name="email" value="<?= htmlspecialchars($prev['email'] ?? '') ?>" required>
             </div>
 
             <div class="input-group">
-                <label>Password</label>
+                <label>Парола</label>
                 <input type="password" name="password" required>
             </div>
 
             <div class="input-group">
-                <label>Confirm Password</label>
+                <label>Потвърди Парола</label>
                 <input type="password" name="confirm-password" required>
             </div>
 
-            <button type="submit" class="btn primary">Register</button>
+            <button type="submit" class="btn primary">Регистрация</button>
         </form>
 
         <p class="switch">
-            Already have an account?
-            <a href="login.php">Login</a>
+            Вече имаш акаунт?
+            <a href="login.php">Вход</a>
         </p>
     </div>
 </div>

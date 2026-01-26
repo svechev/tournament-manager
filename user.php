@@ -73,10 +73,10 @@ mysqli_stmt_close($stmt);
 <header class="navbar">
     <div class="logo"><a href="home.php">TournamentHub</a></div>
     <nav>
-        <a href="home.php">Tournaments</a>
-        <a href="user.php">Profile</a>
-        <a href="create_tournament.php">Create Tournament</a>
-        <a href="handlers/auth/logout_handler.php">Logout</a>
+        <a href="home.php">Турнири</a>
+        <a href="user.php">Профил</a>
+        <a href="create_tournament.php">Създай Турнир</a>
+        <a href="handlers/auth/logout_handler.php">Изход</a>
     </nav>
 </header>
 
@@ -86,9 +86,9 @@ mysqli_stmt_close($stmt);
     <p><?= htmlspecialchars($user['description'] ?? '') ?></p>
     <p class="meta">Joined on <?= date("d.m.Y", strtotime($user['created_at'])) ?></p>
 
-    <h2>Active tournaments</h2>
+    <h2>Активни турнири</h2>
     <?php if (empty($activeTournaments)): ?>
-        <p>No active tournaments.</p>
+        <p>Няма активни турнири.</p>
     <?php else: ?>
         <ul>
             <?php foreach ($activeTournaments as $t): ?>
@@ -102,9 +102,9 @@ mysqli_stmt_close($stmt);
         </ul>
     <?php endif; ?>
 
-    <h2>Finished tournaments</h2>
+    <h2>Завършени турнири</h2>
     <?php if (empty($finishedTournaments)): ?>
-        <p>No finished tournaments.</p>
+        <p>Няма завършени турнири.</p>
     <?php else: ?>
         <ul>
             <?php foreach ($finishedTournaments as $t): ?>
@@ -112,7 +112,7 @@ mysqli_stmt_close($stmt);
                     <a href="tournament.php?id=<?= (int)$t['id'] ?>">
                         <?= htmlspecialchars($t['name']) ?>
                     </a>
-                    – position <?= htmlspecialchars((string)$t['result_position']) ?>
+                    – позиция <?= htmlspecialchars((string)$t['result_position']) ?>
                 </li>
             <?php endforeach; ?>
         </ul>

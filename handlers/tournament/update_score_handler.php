@@ -9,6 +9,11 @@ $match_id = filter_input(INPUT_POST, 'match_id', FILTER_VALIDATE_INT);
 $score1 = filter_input(INPUT_POST, 'player1_score', FILTER_VALIDATE_INT);
 $score2 = filter_input(INPUT_POST, 'player2_score', FILTER_VALIDATE_INT);
 
+$current_round = filter_input(INPUT_POST, 'current_round', FILTER_VALIDATE_INT);
+
+$_SESSION['prev'] = ['current_round' => $current_round];
+
+
 // проверки
 if ($score1 === null || $score1 === false || $score2 === null || $score2 === false 
     || $score1 < 0 || $score2 < 0) {

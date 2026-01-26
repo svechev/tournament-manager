@@ -118,6 +118,6 @@ VALUES
 
 INSERT INTO Matches (match_id, tournament_id, match_date, current_round, side1_nickname, side2_nickname, winner, next_match_id, score)
 VALUES
-  (6, 3, '2026-01-01 12:30:00', 1, NULL, NULL, NULL, NULL, NULL),
-  (4, 3, '2026-01-01 12:00:00', 2, 'gosho', 'pesho', NULL, 6, NULL),  
-  (5, 3, '2026-01-01 12:00:00', 2, 'tosho', 'kris', NULL, 6, NULL);  
+  (6, 3, NOW() + INTERVAL 45 MINUTE, 1, NULL, NULL, NULL, NULL, NULL),
+  (4, 3, NOW() + INTERVAL 15 MINUTE, 2, 'gosho', 'pesho', NULL, 6, NULL),  
+  (5, 3, NOW() + INTERVAL 15 MINUTE, 2, 'tosho', 'kris', NULL, 6, NULL);  

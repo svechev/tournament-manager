@@ -22,7 +22,7 @@
 <div class="auth-container">
     <div class="auth-card">
         <h1 class="logo">TournamentHub</h1>
-        <h2>Sign in</h2>
+        <h2>Вход</h2>
 
         <form action="handlers/auth/login_handler.php" method="post">
             <?php if ($error): ?>
@@ -30,21 +30,21 @@
             <?php endif; ?>
 
             <div class="input-group">
-                <label>Username or Email</label>
+                <label>Потребителско име или имейл адрес</label>
                 <input type="text" name="username-email" value="<?= htmlspecialchars($prev['username-email'] ?? '') ?>" required>
             </div>
 
             <div class="input-group">
-                <label>Password</label>
+                <label>Парола</label>
                 <input type="password" name="password" required>
             </div>
 
-            <button type="submit" class="btn primary">Login</button>
+            <button type="submit" class="btn primary">Вход</button>
         </form>
 
         <p class="switch">
-            Don’t have an account?
-            <a href="register.php">Register</a>
+            Нямаш акаунт?
+            <a href="register.php">Регистрация</a>
         </p>
     </div>
 </div>
