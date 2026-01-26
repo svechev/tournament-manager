@@ -118,4 +118,63 @@ function generateMatches(mysqli $conn, int $tournament_id): void
         mysqli_stmt_bind_param($stmtSeed, "ssi", $s1, $s2, $mid);
         mysqli_stmt_execute($stmtSeed);
     }
+    $bottomPhase = 1 << ($bottomRound - 1);
+
+    $stmtGetBottom = mysqli_prepare(
+        $conn,
+        "SELECT match_id, side1_nickname, side2_nickname, next_match_id, winner
+         FROM Matches
+         WHERE tournament_id = ? AND current_round = ?"
+    );
+    mysqli_stmt_bind_param($stmtGetBottom, "ii", $tournament_id, $bottomPhase);
+    mysqli_stmt_execute($stmtGetBottom);
+    $res = mysqli_stmt_get_result($stmtGetBottom);
+    
+    $stmtSetWinner = mysqli_prepare(
+        $conn,
+        "UPDATE Matches SET winner = ?, score = ? WHERE match_id = ? AND winner IS NULL"
+    );
+    
+    while ($m = mysqli_fetch_assoc($res)) {
+        $s1 = $m['side1_nickname'];
+        $s2 = $m['side2_nickname'];
+    
+        if ($s1 !== null && $s2 === null) {
+            $winnerName = $s1;
+        } elseif ($s1 === null && $s2 !== null) {
+            $winnerName = $s2;
+        } else {
+            continue;
+        }
+    
+        $score = 'BYE';
+        $mid = (int)$m['match_id'];
+        mysqli_stmt_bind_param($stmtSetWinner, "ssi", $winnerName, $score, $mid);
+        mysqli_stmt_execute($stmtSetWinner);
+    
+        if (!empty($m['next_match_id'])) {
+            $nextId = (int)$m['next_match_id'];
+    
+            $stmtFill1 = mysqli_prepare(
+                $conn,
+                "UPDATE Matches
+                 SET side1_nickname = ?
+                 WHERE match_id = ? AND side1_nickname IS NULL"
+            );
+            mysqli_stmt_bind_param($stmtFill1, "si", $winnerName, $nextId);
+            mysqli_stmt_execute($stmtFill1);
+    
+            if (mysqli_stmt_affected_rows($stmtFill1) !== 1) {
+                $stmtFill2 = mysqli_prepare(
+                    $conn,
+                    "UPDATE Matches
+                     SET side2_nickname = ?
+                     WHERE match_id = ? AND side2_nickname IS NULL"
+                );
+                mysqli_stmt_bind_param($stmtFill2, "si", $winnerName, $nextId);
+                mysqli_stmt_execute($stmtFill2);
+            }
+        }
+    }
+
 }
