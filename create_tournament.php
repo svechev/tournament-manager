@@ -18,7 +18,7 @@ $categories = ['Образователни','Шах', 'Спорт', 'Елект�
 <html lang="bg">
 <head>
     <meta charset="UTF-8">
-    <title>CreateTournament | TournamentHub</title>
+    <title>СъздайТурнир | TournamentHub</title>
     <link rel="stylesheet" href="styles/auth.css">
     <link rel="stylesheet" href="styles/style.css">
 </head>

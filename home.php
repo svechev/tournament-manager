@@ -36,7 +36,7 @@ $categories = ['Образователни','Шах', 'Спорт', 'Видео�
 <html lang="bg">
 <head>
     <meta charset="UTF-8">
-    <title>Home | TournamentHub</title>
+    <title>Начало | TournamentHub</title>
     <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>

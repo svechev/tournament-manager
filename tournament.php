@@ -118,7 +118,7 @@ unset($_SESSION['prev']);
 <html lang="bg">
 <head>
     <meta charset="UTF-8">
-    <title>Home | TournamentHub</title>
+    <title>Турнир | TournamentHub</title>
     <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>

@@ -14,7 +14,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Register | TournamentHub</title>
+    <title>Регистрация | TournamentHub</title>
     <link rel="stylesheet" href="styles/auth.css">
 </head>
 <body>

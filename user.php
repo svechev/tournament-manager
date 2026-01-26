@@ -65,7 +65,7 @@ mysqli_stmt_close($stmt);
 <html lang="bg">
 <head>
     <meta charset="UTF-8">
-    <title>Profile | TournamentHub</title>
+    <title>Профил | TournamentHub</title>
     <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
