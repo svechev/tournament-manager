@@ -1,9 +1,5 @@
 RewriteEngine On
 
-<Files ".env">
-    Require all denied
-</Files>
-
 RewriteRule ^database(/|$) - [F,L]
 
 RewriteRule ^config(/|$) - [F,L]

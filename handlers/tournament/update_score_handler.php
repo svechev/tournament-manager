@@ -142,7 +142,7 @@ try {
         $stmt = mysqli_prepare(
         $conn,
         "UPDATE Tournament
-                SET status = 'finished'
+                SET status = 'finished', end_datetime = NOW() 
                 WHERE id = ?"
             );
         mysqli_stmt_bind_param($stmt, "i", $tournament_id);

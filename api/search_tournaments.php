@@ -3,7 +3,7 @@
 require_once __DIR__ . '/../config/config.php';
 require_once ROOT_PATH . 'config/db.php';
 
-$envLines = file(__DIR__ . '/../.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+$envLines = file(__DIR__ . '/../config/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 $csvToken = null;
 foreach ($envLines as $line) {
     if (strpos($line, 'CSV_API_TOKEN=') === 0) {

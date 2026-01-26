@@ -17,7 +17,7 @@ $headers = getallheaders();
 $token = $headers['Authorization'] ?? null;
 
 if ($token) {
-    $envLines = file(__DIR__ . '/../../.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $envLines = file(__DIR__ . '/../../config/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $csvToken = null;
 
     foreach ($envLines as $line) {

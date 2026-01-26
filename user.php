@@ -84,7 +84,7 @@ mysqli_stmt_close($stmt);
     <h1><?= htmlspecialchars($user['username']) ?></h1>
     <p><?= htmlspecialchars($user['email']) ?></p>
     <p><?= htmlspecialchars($user['description'] ?? '') ?></p>
-    <p class="meta">Joined on <?= date("d.m.Y", strtotime($user['created_at'])) ?></p>
+    <p class="meta">Регистриран на <?= date("d.m.Y", strtotime($user['created_at'])) ?></p>
 
     <h2>Активни турнири</h2>
     <?php if (empty($activeTournaments)): ?>
