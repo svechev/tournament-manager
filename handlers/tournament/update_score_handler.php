@@ -88,7 +88,7 @@ try {
 
 
     // update next match if not final
-    if ($match['current_round'] != 1) { // not final
+    if ($match['current_round'] != "1") { // not final
         $next_match_id = (int)$match['next_match_id'];
     
         // check which player in next match is NULL
@@ -125,7 +125,7 @@ try {
     }
 
     // if final 
-    else {
+    if ($match['current_round'] == "1") {
         // set winner's position
         $position = 1;
         $stmt = mysqli_prepare(
